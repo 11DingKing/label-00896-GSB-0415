@@ -114,7 +114,7 @@ class AdminAuthMiddleware
     /**
      * 超级管理员保护：普通管理员无法对超级管理员执行写操作
      */
-    protected function checkSuperAdminProtection(array $currentUser, \think\Request $request, string $path): bool
+    protected function checkSuperAdminProtection(array $currentUser, Request $request, string $path): bool
     {
         // 当前用户是超级管理员，允许所有操作
         if ($currentUser['id'] == 1) {
@@ -154,7 +154,7 @@ class AdminAuthMiddleware
     /**
      * 获取目标用户ID
      */
-    protected function getTargetUserId(\think\Request $request, string $path): ?int
+    protected function getTargetUserId(Request $request, string $path): ?int
     {
         // 从路径参数获取 (如 /admin/user/delete/1)
         $pathParts = explode('/', $path);
@@ -185,7 +185,7 @@ class AdminAuthMiddleware
     /**
      * 获取目标角色ID
      */
-    protected function getTargetRoleId(\think\Request $request, string $path): ?int
+    protected function getTargetRoleId(Request $request, string $path): ?int
     {
         // 从路径参数获取
         $pathParts = explode('/', $path);
@@ -216,7 +216,7 @@ class AdminAuthMiddleware
     /**
      * 判断是否为用户写操作
      */
-    protected function isUserWriteOperation(string $path, \think\Request $request): bool
+    protected function isUserWriteOperation(string $path, Request $request): bool
     {
         $writeActions = ['delete', 'update', 'status', 'save'];
         foreach ($writeActions as $action) {
@@ -234,7 +234,7 @@ class AdminAuthMiddleware
     /**
      * 判断是否为角色写操作
      */
-    protected function isRoleWriteOperation(string $path, \think\Request $request): bool
+    protected function isRoleWriteOperation(string $path, Request $request): bool
     {
         $writeActions = ['delete', 'update', 'permission', 'save'];
         foreach ($writeActions as $action) {
@@ -252,7 +252,7 @@ class AdminAuthMiddleware
     /**
      * 检查是否在分配超级管理员角色
      */
-    protected function isAssigningSuperAdminRole(\think\Request $request): bool
+    protected function isAssigningSuperAdminRole(Request $request): bool
     {
         $roleIds = $request->post('role_ids/a', []);
         if (empty($roleIds)) {
