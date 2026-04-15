@@ -1,0 +1,4 @@
+<?php
+//000000003600
+ exit();?>
+a:14:{s:15:"basic.site_name";s:24:"企业网站管理系统";s:15:"basic.site_logo";s:28:"/static/home/images/logo.png";s:19:"basic.site_keywords";s:29:"企业网站,CMS,内容管理";s:22:"basic.site_description";s:33:"专业的企业网站管理系统";s:14:"basic.site_icp";s:20:"京ICP备12345678号";s:20:"basic.site_copyright";s:44:"© 2024 Enterprise CMS. All rights reserved.";s:20:"contact.company_name";s:24:"某某科技有限公司";s:23:"contact.company_address";s:30:"北京市朝阳区某某大厦";s:21:"contact.company_phone";s:12:"400-888-8888";s:21:"contact.company_email";s:19:"contact@example.com";s:18:"contact.company_qq";s:8:"12345678";s:22:"contact.company_wechat";s:9:"wechat_id";s:16:"social.weibo_url";s:0:"";s:20:"social.wechat_qrcode";s:0:"";}
