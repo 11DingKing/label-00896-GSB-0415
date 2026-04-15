@@ -1,0 +1,90 @@
+{extend name="../admin/layout/base" /}
+
+{block name="title"}分配权限{/block}
+
+{block name="breadcrumb"}
+<li class="breadcrumb-item">用户管理</li>
+<li class="breadcrumb-item"><a href="{:url('/admin/role')}">角色管理</a></li>
+<li class="breadcrumb-item active">分配权限</li>
+{/block}
+
+{block name="content"}
+<div class="card">
+    <div class="card-header">分配权限 - {$role.name}</div>
+    <div class="card-body">
+        <form id="permission-form" action="{:url('/admin/role/permission', ['id' => $role.id])}" method="post">
+            <div class="mb-3">
+                <div class="form-check mb-2">
+                    <input class="form-check-input" type="checkbox" id="check-all">
+                    <label class="form-check-label fw-bold" for="check-all">全选/取消全选</label>
+                </div>
+                <hr>
+                <div class="row">
+                    {volist name="permissions" id="perm"}
+                    <div class="col-md-4 mb-3">
+                        <div class="border rounded p-3">
+                            <div class="form-check mb-2">
+                                <input class="form-check-input parent-check" type="checkbox" name="permission_ids[]" value="{$perm.id}" id="perm_{$perm.id}" {if in_array($perm.id, $rolePermissionIds)}checked{/if}>
+                                <label class="form-check-label fw-bold" for="perm_{$perm.id}">
+                                    <i class="{$perm.icon} me-1"></i>{$perm.name}
+                                </label>
+                            </div>
+                            {if isset($perm.children)}
+                            <div class="ms-4">
+                                {volist name="perm.children" id="child"}
+                                <div class="form-check">
+                                    <input class="form-check-input child-check" type="checkbox" name="permission_ids[]" value="{$child.id}" id="perm_{$child.id}" data-parent="{$perm.id}" {if in_array($child.id, $rolePermissionIds)}checked{/if}>
+                                    <label class="form-check-label" for="perm_{$child.id}">{$child.name}</label>
+                                </div>
+                                {/volist}
+                            </div>
+                            {/if}
+                        </div>
+                    </div>
+                    {/volist}
+                </div>
+            </div>
+            <div class="border-top pt-3 mt-3">
+                <button type="submit" class="btn btn-primary px-4">
+                    <i class="bi bi-check-lg me-1"></i>保存
+                </button>
+                <a href="{:url('/admin/role')}" class="btn btn-outline-secondary ms-2">取消</a>
+            </div>
+        </form>
+    </div>
+</div>
+{/block}
+
+{block name="js"}
+<script>
+    // 全选/取消全选
+    $('#check-all').on('change', function() {
+        $('input[name="permission_ids[]"]').prop('checked', this.checked);
+    });
+
+    // 父级选中时选中所有子级
+    $('.parent-check').on('change', function() {
+        const parentId = $(this).val();
+        $(`.child-check[data-parent="${parentId}"]`).prop('checked', this.checked);
+    });
+
+    // 子级变化时更新父级状态
+    $('.child-check').on('change', function() {
+        const parentId = $(this).data('parent');
+        const $parent = $(`#perm_${parentId}`);
+        const $children = $(`.child-check[data-parent="${parentId}"]`);
+        const checkedCount = $children.filter(':checked').length;
+
+        $parent.prop('checked', checkedCount > 0);
+    });
+
+    $('#permission-form').on('submit', function(e) {
+        e.preventDefault();
+        submitForm(this, function() {
+            setTimeout(function() {
+                location.href = '{:url("/admin/role")}';
+            }, 1000);
+        });
+    });
+</script>
+{/block}

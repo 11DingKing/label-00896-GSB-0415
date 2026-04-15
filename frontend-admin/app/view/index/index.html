@@ -1,0 +1,577 @@
+{extend name="index/layout/base" /}
+
+{block name="title"}{$site_name} - 首页{/block}
+
+{block name="css"}
+<style>
+    /* Hero 区域 */
+    .hero-section {
+        background: linear-gradient(135deg, #1890ff 0%, #096dd9 50%, #0050b3 100%);
+        color: #fff;
+        padding: 120px 0 100px;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .hero-section::before {
+        content: '';
+        position: absolute;
+        top: -50%;
+        right: -10%;
+        width: 600px;
+        height: 600px;
+        background: rgba(255, 255, 255, 0.05);
+        border-radius: 50%;
+    }
+
+    .hero-section::after {
+        content: '';
+        position: absolute;
+        bottom: -30%;
+        left: -5%;
+        width: 400px;
+        height: 400px;
+        background: rgba(255, 255, 255, 0.03);
+        border-radius: 50%;
+    }
+
+    .hero-content {
+        position: relative;
+        z-index: 1;
+    }
+
+    .hero-badge {
+        display: inline-block;
+        background: rgba(255, 255, 255, 0.15);
+        backdrop-filter: blur(10px);
+        padding: 8px 20px;
+        border-radius: 50px;
+        font-size: 14px;
+        margin-bottom: 24px;
+        border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+
+    .hero-title {
+        font-size: 56px;
+        font-weight: 800;
+        line-height: 1.2;
+        margin-bottom: 24px;
+        text-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    }
+
+    .hero-subtitle {
+        font-size: 20px;
+        opacity: 0.9;
+        max-width: 600px;
+        line-height: 1.8;
+        margin-bottom: 40px;
+    }
+
+    .hero-buttons .btn {
+        padding: 14px 32px;
+        font-size: 16px;
+        font-weight: 600;
+        border-radius: 12px;
+        transition: all 0.3s;
+    }
+
+    .hero-buttons .btn-light {
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+    }
+
+    .hero-buttons .btn-light:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 12px 32px rgba(0, 0, 0, 0.2);
+    }
+
+    .hero-buttons .btn-outline-light:hover {
+        background: rgba(255, 255, 255, 0.15);
+    }
+
+    .hero-visual {
+        position: relative;
+        z-index: 1;
+    }
+
+    .hero-card {
+        background: rgba(255, 255, 255, 0.95);
+        border-radius: 24px;
+        padding: 48px;
+        box-shadow: 0 32px 64px rgba(0, 0, 0, 0.2);
+        text-align: center;
+        transform: rotate(3deg);
+        transition: transform 0.3s;
+    }
+
+    .hero-card:hover {
+        transform: rotate(0deg);
+    }
+
+    .hero-card-icon {
+        font-size: 100px;
+        color: #1890ff;
+        margin-bottom: 20px;
+    }
+
+    .hero-card h3 {
+        font-size: 28px;
+        font-weight: 700;
+        color: #1890ff;
+        margin-bottom: 8px;
+    }
+
+    .hero-card p {
+        color: #8c8c8c;
+        margin-bottom: 24px;
+    }
+
+    .hero-tags {
+        display: flex;
+        gap: 12px;
+        justify-content: center;
+        flex-wrap: wrap;
+    }
+
+    .hero-tags .tag {
+        padding: 8px 16px;
+        border-radius: 8px;
+        font-size: 13px;
+        font-weight: 500;
+    }
+
+    /* 统计数据 */
+    .stats-section {
+        background: #fff;
+        padding: 60px 0;
+        margin-top: -60px;
+        position: relative;
+        z-index: 10;
+        border-radius: 24px 24px 0 0;
+        box-shadow: 0 -8px 40px rgba(0, 0, 0, 0.08);
+    }
+
+    .stat-item {
+        text-align: center;
+        padding: 20px;
+    }
+
+    .stat-number {
+        font-size: 48px;
+        font-weight: 800;
+        color: #1890ff;
+        line-height: 1;
+        margin-bottom: 8px;
+    }
+
+    .stat-label {
+        font-size: 16px;
+        color: #8c8c8c;
+    }
+
+    /* 核心优势 */
+    .features-section {
+        background: linear-gradient(180deg, #fff 0%, #f8fafc 100%);
+        padding: 100px 0;
+    }
+
+    .section-header {
+        text-align: center;
+        margin-bottom: 60px;
+    }
+
+    .section-header h2 {
+        font-size: 40px;
+        font-weight: 700;
+        margin-bottom: 16px;
+        color: #262626;
+    }
+
+    .section-header p {
+        font-size: 18px;
+        color: #8c8c8c;
+        max-width: 600px;
+        margin: 0 auto;
+    }
+
+    .feature-card {
+        background: #fff;
+        border-radius: 20px;
+        padding: 48px 32px;
+        text-align: center;
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.06);
+        transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        height: 100%;
+        border: 1px solid rgba(0, 0, 0, 0.04);
+    }
+
+    .feature-card:hover {
+        transform: translateY(-12px);
+        box-shadow: 0 20px 48px rgba(24, 144, 255, 0.15);
+        border-color: rgba(24, 144, 255, 0.2);
+    }
+
+    .feature-icon {
+        width: 88px;
+        height: 88px;
+        border-radius: 24px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 28px;
+        font-size: 40px;
+        color: #fff;
+        transition: transform 0.3s;
+    }
+
+    .feature-card:hover .feature-icon {
+        transform: scale(1.1);
+    }
+
+    .feature-card h4 {
+        font-size: 22px;
+        font-weight: 700;
+        margin-bottom: 16px;
+        color: #262626;
+    }
+
+    .feature-card p {
+        color: #8c8c8c;
+        line-height: 1.8;
+        margin: 0;
+    }
+
+    /* 服务流程 */
+    .process-section {
+        background: #fff;
+        padding: 100px 0;
+    }
+
+    .process-step {
+        text-align: center;
+        position: relative;
+    }
+
+    .process-step::after {
+        content: '';
+        position: absolute;
+        top: 44px;
+        left: 60%;
+        width: 80%;
+        height: 3px;
+        background: linear-gradient(90deg, #1890ff 0%, #e8e8e8 100%);
+        border-radius: 2px;
+    }
+
+    .process-step:last-child::after {
+        display: none;
+    }
+
+    .step-number {
+        width: 88px;
+        height: 88px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, #1890ff 0%, #096dd9 100%);
+        color: #fff;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 36px;
+        font-weight: 800;
+        margin: 0 auto 24px;
+        position: relative;
+        z-index: 1;
+        box-shadow: 0 12px 32px rgba(24, 144, 255, 0.3);
+        transition: all 0.3s;
+    }
+
+    .process-step:hover .step-number {
+        transform: scale(1.1);
+        box-shadow: 0 16px 40px rgba(24, 144, 255, 0.4);
+    }
+
+    .process-step h5 {
+        font-size: 20px;
+        font-weight: 700;
+        margin-bottom: 12px;
+        color: #262626;
+    }
+
+    .process-step p {
+        color: #8c8c8c;
+        font-size: 15px;
+    }
+
+    /* CTA 区域 */
+    .cta-section {
+        background: linear-gradient(135deg, #1890ff 0%, #096dd9 50%, #0050b3 100%);
+        color: #fff;
+        padding: 100px 0;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .cta-section::before {
+        content: '';
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 800px;
+        height: 800px;
+        background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+        border-radius: 50%;
+    }
+
+    .cta-content {
+        position: relative;
+        z-index: 1;
+        text-align: center;
+    }
+
+    .cta-content h2 {
+        font-size: 44px;
+        font-weight: 700;
+        margin-bottom: 20px;
+    }
+
+    .cta-content p {
+        font-size: 20px;
+        opacity: 0.9;
+        margin-bottom: 40px;
+    }
+
+    .cta-content .btn {
+        padding: 16px 48px;
+        font-size: 18px;
+        font-weight: 600;
+        border-radius: 12px;
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+        transition: all 0.3s;
+    }
+
+    .cta-content .btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 12px 32px rgba(0, 0, 0, 0.2);
+    }
+
+    /* 响应式 */
+    @media (max-width: 992px) {
+        .hero-title {
+            font-size: 40px;
+        }
+
+        .hero-visual {
+            display: none;
+        }
+
+        .stats-section {
+            margin-top: 0;
+            border-radius: 0;
+        }
+
+        .stat-number {
+            font-size: 36px;
+        }
+    }
+
+    @media (max-width: 768px) {
+        .hero-section {
+            padding: 80px 0 60px;
+        }
+
+        .hero-title {
+            font-size: 32px;
+        }
+
+        .hero-subtitle {
+            font-size: 16px;
+        }
+
+        .section-header h2 {
+            font-size: 28px;
+        }
+
+        .process-step::after {
+            display: none;
+        }
+
+        .cta-content h2 {
+            font-size: 28px;
+        }
+    }
+</style>
+{/block}
+
+{block name="content"}
+<!-- Hero 区域 -->
+<section class="hero-section">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-lg-6">
+                <div class="hero-content">
+                    <span class="hero-badge">
+                        <i class="bi bi-stars me-2"></i>专业 · 高效 · 可靠
+                    </span>
+                    <h1 class="hero-title">{:get_config('basic.site_name', '企业网站管理系统')}</h1>
+                    <p class="hero-subtitle">{:get_config('basic.site_description', '为企业提供一站式数字化解决方案，助力企业快速搭建专业网站，提升品牌形象与市场竞争力')}</p>
+                    <div class="hero-buttons d-flex gap-3 flex-wrap">
+                        <a href="{:url('/about')}" class="btn btn-light">
+                            <i class="bi bi-info-circle me-2"></i>了解更多
+                        </a>
+                        <a href="{:url('/contact')}" class="btn btn-outline-light">
+                            <i class="bi bi-telephone me-2"></i>联系我们
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-6 d-none d-lg-block">
+                <div class="hero-visual">
+                    <div class="hero-card">
+                        <i class="bi bi-building hero-card-icon"></i>
+                        <h3>Enterprise CMS</h3>
+                        <p>专业企业网站管理系统</p>
+                        <div class="hero-tags">
+                            <span class="tag bg-primary-subtle text-primary">响应式设计</span>
+                            <span class="tag bg-success-subtle text-success">安全可靠</span>
+                            <span class="tag bg-warning-subtle text-warning">易于管理</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- 统计数据 -->
+<section class="stats-section">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-3 col-6">
+                <div class="stat-item">
+                    <div class="stat-number">500+</div>
+                    <div class="stat-label">服务客户</div>
+                </div>
+            </div>
+            <div class="col-md-3 col-6">
+                <div class="stat-item">
+                    <div class="stat-number">10+</div>
+                    <div class="stat-label">年行业经验</div>
+                </div>
+            </div>
+            <div class="col-md-3 col-6">
+                <div class="stat-item">
+                    <div class="stat-number">99%</div>
+                    <div class="stat-label">客户满意度</div>
+                </div>
+            </div>
+            <div class="col-md-3 col-6">
+                <div class="stat-item">
+                    <div class="stat-number">24h</div>
+                    <div class="stat-label">技术支持</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- 核心优势 -->
+<section class="features-section">
+    <div class="container">
+        <div class="section-header">
+            <h2>为什么选择我们</h2>
+            <p>专业的技术团队，为您提供一站式企业数字化解决方案</p>
+        </div>
+        <div class="row g-4">
+            <div class="col-lg-3 col-md-6">
+                <div class="feature-card">
+                    <div class="feature-icon" style="background: linear-gradient(135deg, #1890ff, #40a9ff);">
+                        <i class="bi bi-shield-check"></i>
+                    </div>
+                    <h4>安全可靠</h4>
+                    <p>多重安全防护机制，保障数据安全，让您无后顾之忧</p>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-6">
+                <div class="feature-card">
+                    <div class="feature-icon" style="background: linear-gradient(135deg, #52c41a, #73d13d);">
+                        <i class="bi bi-lightning-charge"></i>
+                    </div>
+                    <h4>高效稳定</h4>
+                    <p>优化的系统架构，快速响应，确保网站稳定运行</p>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-6">
+                <div class="feature-card">
+                    <div class="feature-icon" style="background: linear-gradient(135deg, #faad14, #ffc53d);">
+                        <i class="bi bi-palette"></i>
+                    </div>
+                    <h4>美观大气</h4>
+                    <p>专业UI设计，响应式布局，完美适配各种设备</p>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-6">
+                <div class="feature-card">
+                    <div class="feature-icon" style="background: linear-gradient(135deg, #722ed1, #9254de);">
+                        <i class="bi bi-gear"></i>
+                    </div>
+                    <h4>易于管理</h4>
+                    <p>直观的后台管理，简单易用，轻松维护网站内容</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- 服务流程 -->
+<section class="process-section">
+    <div class="container">
+        <div class="section-header">
+            <h2>服务流程</h2>
+            <p>专业规范的服务流程，确保项目顺利交付</p>
+        </div>
+        <div class="row g-4">
+            <div class="col-lg-3 col-md-6">
+                <div class="process-step">
+                    <div class="step-number">1</div>
+                    <h5>需求沟通</h5>
+                    <p>深入了解您的需求，提供专业建议</p>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-6">
+                <div class="process-step">
+                    <div class="step-number">2</div>
+                    <h5>方案设计</h5>
+                    <p>量身定制解决方案，确定项目规划</p>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-6">
+                <div class="process-step">
+                    <div class="step-number">3</div>
+                    <h5>开发实施</h5>
+                    <p>专业团队开发，严格质量把控</p>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-6">
+                <div class="process-step">
+                    <div class="step-number">4</div>
+                    <h5>上线运维</h5>
+                    <p>项目交付上线，持续技术支持</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- CTA 区域 -->
+<section class="cta-section">
+    <div class="container">
+        <div class="cta-content">
+            <h2>准备开始您的项目了吗？</h2>
+            <p>联系我们，获取专属解决方案</p>
+            <a href="{:url('/contact')}" class="btn btn-light">
+                <i class="bi bi-telephone me-2"></i>立即联系我们
+            </a>
+        </div>
+    </div>
+</section>
+{/block}

@@ -1,0 +1,175 @@
+{extend name="admin/layout/base" /}
+
+{block name="title"}添加产品{/block}
+
+{block name="breadcrumb"}
+<li class="breadcrumb-item">内容管理</li>
+<li class="breadcrumb-item"><a href="{:url('/admin/product')}">产品管理</a></li>
+<li class="breadcrumb-item active">添加产品</li>
+{/block}
+
+{block name="css"}
+<link href="https://cdn.jsdelivr.net/npm/tinymce@6/skins/ui/oxide/skin.min.css" rel="stylesheet">
+{/block}
+
+{block name="content"}
+<div class="card">
+    <div class="card-header">添加产品</div>
+    <div class="card-body">
+        <form id="product-form" action="{:url('/admin/product/save')}" method="post" novalidate>
+            <div class="row">
+                <div class="col-lg-8">
+                    <div class="form-group-wrapper mb-3">
+                        <label class="form-label">产品名称 <span class="text-danger">*</span></label>
+                        <input type="text" class="form-control" name="name" id="name" maxlength="200">
+                        <div class="invalid-feedback">请输入产品名称</div>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">产品简介</label>
+                        <textarea class="form-control" name="description" rows="3" maxlength="500"></textarea>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">产品详情</label>
+                        <textarea class="form-control" name="content" id="editor" rows="15"></textarea>
+                    </div>
+                </div>
+                <div class="col-lg-4">
+                    <div class="form-group-wrapper mb-3">
+                        <label class="form-label">所属分类 <span class="text-danger">*</span></label>
+                        <select class="form-select" name="category_id" id="category_id">
+                            <option value="">请选择分类</option>
+                            {volist name="categories" id="cat"}
+                            <option value="{$key}">{$cat}</option>
+                            {/volist}
+                        </select>
+                        <div class="invalid-feedback">请选择分类</div>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">封面图片</label>
+                        <div class="input-group">
+                            <input type="text" class="form-control" name="cover" id="cover-input" placeholder="图片地址">
+                            <button type="button" class="btn btn-outline-secondary" onclick="uploadImage()">上传</button>
+                        </div>
+                        <div id="cover-preview" class="mt-2"></div>
+                        <input type="file" id="cover-file" class="d-none" accept="image/*">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">价格</label>
+                        <div class="input-group">
+                            <span class="input-group-text">¥</span>
+                            <input type="number" class="form-control" name="price" step="0.01" min="0" value="0">
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">排序</label>
+                        <input type="number" class="form-control" name="sort" value="0" min="0">
+                        <div class="form-text">数字越小越靠前</div>
+                    </div>
+                    <div class="mb-3">
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" name="is_recommend" value="1" id="is_recommend">
+                            <label class="form-check-label" for="is_recommend">推荐产品</label>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">状态</label>
+                        <select class="form-select" name="status">
+                            <option value="1">上架</option>
+                            <option value="0">下架</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <div class="border-top pt-3 mt-3">
+                <button type="submit" class="btn btn-primary px-4">
+                    <i class="bi bi-check-lg me-1"></i>保存
+                </button>
+                <a href="{:url('/admin/product')}" class="btn btn-outline-secondary ms-2">取消</a>
+            </div>
+        </form>
+    </div>
+</div>
+{/block}
+
+{block name="js"}
+<script src="https://cdn.jsdelivr.net/npm/tinymce@6/tinymce.min.js"></script>
+<script>
+    tinymce.init({
+        selector: '#editor',
+        height: 400,
+        language: 'zh_CN',
+        plugins: 'lists link image table code fullscreen',
+        toolbar: 'undo redo | formatselect | bold italic | alignleft aligncenter alignright | bullist numlist | link image | code fullscreen',
+        menubar: false,
+        branding: false,
+        content_style: 'body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; font-size: 14px; }'
+    });
+
+    function uploadImage() {
+        $('#cover-file').click();
+    }
+
+    $('#cover-file').on('change', function() {
+        const file = this.files[0];
+        if (!file) return;
+
+        const formData = new FormData();
+        formData.append('file', file);
+
+        $.ajax({
+            url: '{:url("/admin/upload/image")}',
+            type: 'POST',
+            data: formData,
+            processData: false,
+            contentType: false,
+            success: function(res) {
+                if (res.code === 1) {
+                    $('#cover-input').val(res.data.url);
+                    $('#cover-preview').html('<img src="' + res.data.url + '" class="img-thumbnail" style="max-width:200px;">');
+                    showToast('上传成功');
+                } else {
+                    showToast(res.msg, 'error');
+                }
+            }
+        });
+    });
+
+    $('#product-form').on('submit', function(e) {
+        e.preventDefault();
+        tinymce.triggerSave();
+
+        var isValid = true;
+        var firstError = null;
+        var $form = $(this);
+
+        clearAllErrors($form);
+
+        // 验证名称
+        var $name = $('#name');
+        if (!$name.val().trim()) {
+            setFieldError($name, '请输入产品名称');
+            isValid = false;
+            if (!firstError) firstError = $name;
+        }
+
+        // 验证分类
+        var $category = $('#category_id');
+        if (!$category.val()) {
+            setFieldError($category, '请选择分类');
+            isValid = false;
+            if (!firstError) firstError = $category;
+        }
+
+        if (!isValid) {
+            if (firstError) firstError.focus();
+            return;
+        }
+
+        submitForm(this, function() {
+            setTimeout(function() {
+                location.href = '{:url("/admin/product")}';
+            }, 1000);
+        });
+    });
+</script>
+{/block}

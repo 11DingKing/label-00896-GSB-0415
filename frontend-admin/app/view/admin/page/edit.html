@@ -1,0 +1,108 @@
+{extend name="admin/layout/base" /}
+
+{block name="title"}编辑单页{/block}
+
+{block name="breadcrumb"}
+<li class="breadcrumb-item">内容管理</li>
+<li class="breadcrumb-item"><a href="{:url('/admin/page')}">单页管理</a></li>
+<li class="breadcrumb-item active">编辑单页</li>
+{/block}
+
+{block name="css"}
+<link href="https://cdn.jsdelivr.net/npm/tinymce@6/skins/ui/oxide/skin.min.css" rel="stylesheet">
+{/block}
+
+{block name="content"}
+<div class="card">
+    <div class="card-header">编辑单页</div>
+    <div class="card-body">
+        <form id="page-form" action="{:url('/admin/page/update', ['id' => $page.id])}" method="post" novalidate>
+            <div class="row">
+                <div class="col-lg-8">
+                    <div class="mb-3">
+                        <label class="form-label">页面标识</label>
+                        <input type="text" class="form-control" value="{$page.slug}" disabled>
+                    </div>
+                    <div class="form-group-wrapper mb-3">
+                        <label class="form-label">页面标题 <span class="text-danger">*</span></label>
+                        <input type="text" class="form-control" name="title" id="title" value="{$page.title}" maxlength="200">
+                        <div class="invalid-feedback">请输入页面标题</div>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">页面内容</label>
+                        <textarea class="form-control" name="content" id="editor" rows="15">{$page.content|raw}</textarea>
+                    </div>
+                </div>
+                <div class="col-lg-4">
+                    <div class="mb-3">
+                        <label class="form-label">SEO标题</label>
+                        <input type="text" class="form-control" name="seo_title" value="{$page.seo_title}" maxlength="200">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">SEO关键词</label>
+                        <input type="text" class="form-control" name="seo_keywords" value="{$page.seo_keywords}" maxlength="255">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">SEO描述</label>
+                        <textarea class="form-control" name="seo_description" rows="3" maxlength="500">{$page.seo_description}</textarea>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">状态</label>
+                        <select class="form-select" name="status">
+                            <option value="1" {if $page.status == 1}selected{/if}>正常</option>
+                            <option value="0" {if $page.status == 0}selected{/if}>禁用</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <div class="border-top pt-3 mt-3">
+                <button type="submit" class="btn btn-primary px-4">
+                    <i class="bi bi-check-lg me-1"></i>保存
+                </button>
+                <a href="{:url('/admin/page')}" class="btn btn-outline-secondary ms-2">取消</a>
+            </div>
+        </form>
+    </div>
+</div>
+{/block}
+
+{block name="js"}
+<script src="https://cdn.jsdelivr.net/npm/tinymce@6/tinymce.min.js"></script>
+<script>
+    tinymce.init({
+        selector: '#editor',
+        height: 500,
+        language: 'zh_CN',
+        plugins: 'lists link image table code fullscreen',
+        toolbar: 'undo redo | formatselect | bold italic | alignleft aligncenter alignright | bullist numlist | link image | code fullscreen',
+        menubar: false,
+        branding: false
+    });
+
+    $('#page-form').on('submit', function(e) {
+        e.preventDefault();
+        tinymce.triggerSave();
+
+        var isValid = true;
+        var $form = $(this);
+
+        clearAllErrors($form);
+
+        // 验证标题
+        var $title = $('#title');
+        if (!$title.val().trim()) {
+            setFieldError($title, '请输入页面标题');
+            isValid = false;
+            $title.focus();
+        }
+
+        if (!isValid) return;
+
+        submitForm(this, function() {
+            setTimeout(function() {
+                location.href = '{:url("/admin/page")}';
+            }, 1000);
+        });
+    });
+</script>
+{/block}

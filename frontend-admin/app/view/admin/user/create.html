@@ -1,0 +1,134 @@
+{extend name="admin/layout/base" /}
+
+{block name="title"}添加用户{/block}
+
+{block name="breadcrumb"}
+<li class="breadcrumb-item">用户管理</li>
+<li class="breadcrumb-item"><a href="{:url('/admin/user')}">用户列表</a></li>
+<li class="breadcrumb-item active">添加用户</li>
+{/block}
+
+{block name="content"}
+<div class="card">
+    <div class="card-header">添加用户</div>
+    <div class="card-body">
+        <form id="user-form" action="{:url('/admin/user/save')}" method="post" style="max-width: 600px;" novalidate>
+            <div class="form-group-wrapper mb-3">
+                <label class="form-label">用户名 <span class="text-danger">*</span></label>
+                <input type="text" class="form-control" name="username" id="username" maxlength="50">
+                <div class="invalid-feedback">请输入用户名</div>
+                <div class="form-text">用于登录，创建后不可修改</div>
+            </div>
+            <div class="form-group-wrapper mb-3">
+                <label class="form-label">密码 <span class="text-danger">*</span></label>
+                <input type="password" class="form-control" name="password" id="password" minlength="6" maxlength="32">
+                <div class="invalid-feedback">请输入密码（至少6位）</div>
+            </div>
+            <div class="form-group-wrapper mb-3">
+                <label class="form-label">确认密码 <span class="text-danger">*</span></label>
+                <input type="password" class="form-control" name="password_confirm" id="password_confirm">
+                <div class="invalid-feedback">请确认密码</div>
+            </div>
+            <div class="form-group-wrapper mb-3">
+                <label class="form-label">昵称</label>
+                <input type="text" class="form-control" name="nickname" maxlength="50">
+            </div>
+            <div class="form-group-wrapper mb-3">
+                <label class="form-label">邮箱</label>
+                <input type="email" class="form-control" name="email" id="email" maxlength="100">
+                <div class="invalid-feedback">请输入正确的邮箱地址</div>
+            </div>
+            <div class="mb-3">
+                <label class="form-label">角色</label>
+                <div class="border rounded p-3">
+                    {volist name="roles" id="role"}
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" name="role_ids[]" value="{$role.id}" id="role_{$role.id}">
+                        <label class="form-check-label" for="role_{$role.id}">{$role.name}</label>
+                    </div>
+                    {/volist}
+                </div>
+            </div>
+            <div class="mb-3">
+                <label class="form-label">状态</label>
+                <select class="form-select" name="status">
+                    <option value="1">正常</option>
+                    <option value="0">禁用</option>
+                </select>
+            </div>
+            <div class="border-top pt-3 mt-3">
+                <button type="submit" class="btn btn-primary px-4">
+                    <i class="bi bi-check-lg me-1"></i>保存
+                </button>
+                <a href="{:url('/admin/user')}" class="btn btn-outline-secondary ms-2">取消</a>
+            </div>
+        </form>
+    </div>
+</div>
+{/block}
+
+{block name="js"}
+<script>
+    $('#user-form').on('submit', function(e) {
+        e.preventDefault();
+
+        var isValid = true;
+        var firstError = null;
+        var $form = $(this);
+
+        clearAllErrors($form);
+
+        // 验证用户名
+        var $username = $('#username');
+        if (!$username.val().trim()) {
+            setFieldError($username, '请输入用户名');
+            isValid = false;
+            if (!firstError) firstError = $username;
+        }
+
+        // 验证密码
+        var $password = $('#password');
+        var password = $password.val();
+        if (!password) {
+            setFieldError($password, '请输入密码');
+            isValid = false;
+            if (!firstError) firstError = $password;
+        } else if (password.length < 6) {
+            setFieldError($password, '密码长度至少为6位');
+            isValid = false;
+            if (!firstError) firstError = $password;
+        }
+
+        // 验证确认密码
+        var $passwordConfirm = $('#password_confirm');
+        var passwordConfirm = $passwordConfirm.val();
+        if (!passwordConfirm) {
+            setFieldError($passwordConfirm, '请确认密码');
+            isValid = false;
+            if (!firstError) firstError = $passwordConfirm;
+        } else if (password !== passwordConfirm) {
+            setFieldError($passwordConfirm, '两次输入的密码不一致');
+            isValid = false;
+            if (!firstError) firstError = $passwordConfirm;
+        }
+
+        // 验证邮箱（可选）
+        var $email = $('#email');
+        if (!validateEmail($email)) {
+            isValid = false;
+            if (!firstError) firstError = $email;
+        }
+
+        if (!isValid) {
+            if (firstError) firstError.focus();
+            return;
+        }
+
+        submitForm(this, function() {
+            setTimeout(function() {
+                location.href = '{:url("/admin/user")}';
+            }, 1000);
+        });
+    });
+</script>
+{/block}

@@ -1,0 +1,101 @@
+{extend name="../admin/layout/base" /}
+
+{block name="title"}查看留言{/block}
+
+{block name="breadcrumb"}
+<li class="breadcrumb-item">系统管理</li>
+<li class="breadcrumb-item"><a href="{:url('/admin/message')}">留言管理</a></li>
+<li class="breadcrumb-item active">查看留言</li>
+{/block}
+
+{block name="content"}
+<div class="row">
+    <div class="col-lg-8">
+        <div class="card">
+            <div class="card-header">留言详情</div>
+            <div class="card-body">
+                <table class="table table-bordered">
+                    <tr>
+                        <th width="120" class="bg-light">姓名</th>
+                        <td>{$message.name}</td>
+                    </tr>
+                    <tr>
+                        <th class="bg-light">邮箱</th>
+                        <td>{$message.email|default='-'}</td>
+                    </tr>
+                    <tr>
+                        <th class="bg-light">电话</th>
+                        <td>{$message.phone|default='-'}</td>
+                    </tr>
+                    <tr>
+                        <th class="bg-light">公司</th>
+                        <td>{$message.company|default='-'}</td>
+                    </tr>
+                    <tr>
+                        <th class="bg-light">主题</th>
+                        <td>{$message.subject|default='-'}</td>
+                    </tr>
+                    <tr>
+                        <th class="bg-light">内容</th>
+                        <td style="white-space: pre-wrap;">{$message.content}</td>
+                    </tr>
+                    <tr>
+                        <th class="bg-light">IP地址</th>
+                        <td>{$message.ip}</td>
+                    </tr>
+                    <tr>
+                        <th class="bg-light">提交时间</th>
+                        <td>{$message.created_at|format_time}</td>
+                    </tr>
+                </table>
+
+                {if $message.reply}
+                <div class="alert alert-success mt-3">
+                    <h6 class="alert-heading"><i class="bi bi-reply me-1"></i>回复内容</h6>
+                    <p class="mb-1" style="white-space: pre-wrap;">{$message.reply}</p>
+                    <small class="text-muted">回复时间：{$message.replied_at|format_time}</small>
+                </div>
+                {else}
+                <div class="mt-4">
+                    <h6><i class="bi bi-reply me-1"></i>回复留言</h6>
+                    <form id="reply-form" action="{:url('/admin/message/reply', ['id' => $message.id])}" method="post">
+                        <div class="mb-3">
+                            <textarea class="form-control" name="reply" rows="4" placeholder="请输入回复内容..." required></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="bi bi-send me-1"></i>发送回复
+                        </button>
+                    </form>
+                </div>
+                {/if}
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-4">
+        <div class="card">
+            <div class="card-header">操作</div>
+            <div class="card-body">
+                <a href="{:url('/admin/message')}" class="btn btn-outline-secondary w-100 mb-2">
+                    <i class="bi bi-arrow-left me-1"></i>返回列表
+                </a>
+                <button type="button" class="btn btn-outline-danger w-100" onclick="confirmDelete('{:url('/admin/message/delete', ['id' => $message.id])}', function(){ location.href='{:url('/admin/message')}'; })">
+                    <i class="bi bi-trash me-1"></i>删除留言
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+{/block}
+
+{block name="js"}
+<script>
+    $('#reply-form').on('submit', function(e) {
+        e.preventDefault();
+        submitForm(this, function() {
+            setTimeout(function() {
+                location.reload();
+            }, 1000);
+        });
+    });
+</script>
+{/block}

@@ -1,0 +1,166 @@
+{extend name="../admin/layout/base" /}
+
+{block name="title"}系统配置{/block}
+
+{block name="breadcrumb"}
+<li class="breadcrumb-item active">系统配置</li>
+{/block}
+
+{block name="css"}
+<style>
+.config-tabs {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 24px;
+    border-bottom: 1px solid #e8e8e8;
+    padding-bottom: 0;
+}
+.config-tabs .tab-item {
+    padding: 12px 24px;
+    color: #666;
+    text-decoration: none;
+    border-bottom: 2px solid transparent;
+    margin-bottom: -1px;
+    transition: all 0.3s;
+    font-weight: 500;
+}
+.config-tabs .tab-item:hover {
+    color: var(--primary-color);
+}
+.config-tabs .tab-item.active {
+    color: var(--primary-color);
+    border-bottom-color: var(--primary-color);
+}
+.config-form .form-group {
+    margin-bottom: 24px;
+}
+.config-form .form-label {
+    font-weight: 500;
+    color: #333;
+    margin-bottom: 8px;
+}
+.config-form .form-text {
+    color: #999;
+    font-size: 12px;
+    margin-top: 6px;
+}
+.config-card {
+    background: #fff;
+    border-radius: 12px;
+    padding: 0 32px 32px;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+    border-top: 3px solid var(--primary-color);
+}
+.config-footer {
+    margin-top: 32px;
+    padding-top: 24px;
+    border-top: 1px solid #f0f0f0;
+    text-align: right;
+}
+</style>
+{/block}
+
+{block name="content"}
+<div class="config-card">
+    <div class="config-tabs">
+        <a href="/admin/config?group=basic" class="tab-item {if $group == 'basic'}active{/if}">基本设置</a>
+        <a href="/admin/config?group=contact" class="tab-item {if $group == 'contact'}active{/if}">联系信息</a>
+    </div>
+
+    <form id="configForm" class="config-form">
+        <input type="hidden" name="group" value="{$group}">
+
+        {volist name="configs" id="item"}
+        <div class="form-group">
+            <label class="form-label">{$item.description}</label>
+            {switch $item.type}
+            {case 'textarea'}
+            <textarea class="form-control" name="config[{$item.key_name}]" rows="3" placeholder="请输入{$item.description}">{$item.value}</textarea>
+            {/case}
+            {case 'image'}
+            <div class="input-group">
+                <input type="text" class="form-control" name="config[{$item.key_name}]" id="config_{$item.key_name}" value="{$item.value}" placeholder="请输入图片URL或上传">
+                <button type="button" class="btn btn-outline-primary" onclick="uploadConfigImage('{$item.key_name}')"><i class="bi bi-upload me-1"></i>上传</button>
+            </div>
+            {if $item.value}
+            <div class="mt-2">
+                <img src="{$item.value}" class="img-thumbnail" style="max-width:120px;max-height:80px;" id="preview_{$item.key_name}">
+            </div>
+            {/if}
+            {/case}
+            {default}
+            <input type="text" class="form-control" name="config[{$item.key_name}]" value="{$item.value}" placeholder="请输入{$item.description}">
+            {/switch}
+        </div>
+        {/volist}
+
+        {empty name="configs"}
+        <div class="text-center text-muted py-5">暂无配置项</div>
+        {/empty}
+
+        <div class="config-footer">
+            <button type="submit" class="btn btn-primary px-4">
+                <i class="bi bi-check-lg me-1"></i>保存配置
+            </button>
+        </div>
+    </form>
+</div>
+
+<input type="file" id="configFile" class="d-none" accept="image/*">
+{/block}
+
+{block name="js"}
+<script>
+var currentConfigKey = '';
+
+function uploadConfigImage(key) {
+    currentConfigKey = key;
+    $('#configFile').click();
+}
+
+$('#configFile').on('change', function() {
+    var file = this.files[0];
+    if (!file) return;
+
+    var formData = new FormData();
+    formData.append('file', file);
+
+    $.ajax({
+        url: '/admin/upload/image',
+        type: 'POST',
+        data: formData,
+        processData: false,
+        contentType: false,
+        success: function(res) {
+            if (res.code === 1) {
+                $('#config_' + currentConfigKey).val(res.data.url);
+                if ($('#preview_' + currentConfigKey).length) {
+                    $('#preview_' + currentConfigKey).attr('src', res.data.url);
+                } else {
+                    $('#config_' + currentConfigKey).closest('.input-group').after('<div class="mt-2"><img src="' + res.data.url + '" class="img-thumbnail" style="max-width:120px;max-height:80px;" id="preview_' + currentConfigKey + '"></div>');
+                }
+                showToast('上传成功');
+            } else {
+                showToast(res.msg, 'error');
+            }
+        }
+    });
+    this.value = '';
+});
+
+$('#configForm').on('submit', function(e) {
+    e.preventDefault();
+    var $btn = $(this).find('[type="submit"]');
+    $btn.prop('disabled', true).html('<span class="spinner-border spinner-border-sm me-1"></span>保存中...');
+
+    $.post('/admin/config/save', $(this).serialize(), function(res) {
+        if (res.code === 1) {
+            showToast(res.msg);
+        } else {
+            showToast(res.msg, 'error');
+        }
+        $btn.prop('disabled', false).html('<i class="bi bi-check-lg me-1"></i>保存配置');
+    }, 'json');
+});
+</script>
+{/block}

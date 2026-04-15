@@ -1,0 +1,498 @@
+{extend name="index/layout/base" /}
+
+{block name="title"}新闻中心 - {$site_name}{/block}
+
+{block name="css"}
+<style>
+    /* 分类标签 */
+    .category-tabs {
+        background: #fff;
+        border-radius: 16px;
+        padding: 20px;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+        margin-bottom: 30px;
+        display: flex;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 10px;
+    }
+
+    .category-tabs .tab-label {
+        font-weight: 600;
+        color: var(--text-secondary);
+        margin-right: 10px;
+    }
+
+    .category-tabs .tab-item {
+        display: inline-block;
+        padding: 10px 24px;
+        border-radius: 25px;
+        color: var(--text-secondary);
+        text-decoration: none;
+        font-weight: 500;
+        transition: all 0.3s;
+        border: 2px solid transparent;
+    }
+
+    .category-tabs .tab-item:hover {
+        background: #f0f5ff;
+        color: var(--primary-color);
+        border-color: #d6e4ff;
+    }
+
+    .category-tabs .tab-item.active {
+        background: var(--primary-color);
+        color: #fff;
+    }
+
+    /* 新闻卡片 */
+    .news-card {
+        background: #fff;
+        border-radius: 16px;
+        overflow: hidden;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+        transition: all 0.3s ease;
+        height: 100%;
+    }
+
+    .news-card:hover {
+        transform: translateY(-8px);
+        box-shadow: 0 16px 48px rgba(0, 0, 0, 0.12);
+    }
+
+    .news-card .news-thumb {
+        position: relative;
+        height: 200px;
+        overflow: hidden;
+    }
+
+    .news-card .news-thumb img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: transform 0.5s ease;
+    }
+
+    .news-card:hover .news-thumb img {
+        transform: scale(1.1);
+    }
+
+    .news-card .news-thumb .news-date {
+        position: absolute;
+        bottom: 12px;
+        left: 12px;
+        background: var(--primary-color);
+        color: #fff;
+        padding: 6px 14px;
+        border-radius: 8px;
+        font-size: 13px;
+        font-weight: 500;
+    }
+
+    .news-card .news-thumb .top-badge {
+        position: absolute;
+        top: 12px;
+        right: 12px;
+        background: linear-gradient(135deg, #ff6b6b, #ee5a24);
+        color: #fff;
+        padding: 5px 12px;
+        border-radius: 6px;
+        font-size: 12px;
+        font-weight: 600;
+    }
+
+    .news-card .news-body {
+        padding: 24px;
+    }
+
+    .news-card .news-title {
+        font-size: 18px;
+        font-weight: 600;
+        margin-bottom: 12px;
+        line-height: 1.5;
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+    }
+
+    .news-card .news-title a {
+        color: var(--text-primary);
+        text-decoration: none;
+        transition: color 0.3s;
+    }
+
+    .news-card .news-title a:hover {
+        color: var(--primary-color);
+    }
+
+    .news-card .news-excerpt {
+        color: var(--text-muted);
+        font-size: 14px;
+        line-height: 1.7;
+        margin-bottom: 16px;
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+    }
+
+    .news-card .news-meta {
+        display: flex;
+        align-items: center;
+        font-size: 13px;
+        color: var(--text-muted);
+    }
+
+    .news-card .news-meta span {
+        display: flex;
+        align-items: center;
+        margin-right: 16px;
+    }
+
+    .news-card .news-meta i {
+        margin-right: 5px;
+        color: var(--primary-color);
+    }
+
+    /* 无封面时的占位 */
+    .news-thumb-placeholder {
+        background: linear-gradient(135deg, #1890ff 0%, #096dd9 100%);
+        height: 200px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .news-thumb-placeholder i {
+        font-size: 48px;
+        color: rgba(255, 255, 255, 0.4);
+    }
+
+    /* 空状态 */
+    .empty-state {
+        background: #fff;
+        border-radius: 20px;
+        padding: 80px 40px;
+        text-align: center;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+    }
+
+    .empty-state i {
+        font-size: 80px;
+        color: #e2e8f0;
+        margin-bottom: 20px;
+    }
+
+    .empty-state h4 {
+        color: var(--text-secondary);
+        margin-bottom: 8px;
+    }
+
+    .empty-state p {
+        color: var(--text-muted);
+    }
+
+    /* 现代分页样式 */
+    .pagination-modern {
+        margin: 0;
+        gap: 8px;
+    }
+
+    .pagination-modern .page-item .page-link {
+        border: none;
+        border-radius: 12px;
+        padding: 12px 16px;
+        color: var(--text-secondary);
+        background: #fff;
+        box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+        transition: all 0.3s ease;
+        font-weight: 500;
+        min-width: 48px;
+        text-align: center;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .pagination-modern .page-item .page-link:hover {
+        background: var(--primary-color);
+        color: #fff;
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(24, 144, 255, 0.3);
+    }
+
+    .pagination-modern .page-item.active .page-link {
+        background: var(--primary-color);
+        color: #fff;
+        box-shadow: 0 4px 20px rgba(24, 144, 255, 0.4);
+    }
+
+    .pagination-modern .page-item.disabled .page-link {
+        background: #f8f9fa;
+        color: #adb5bd;
+        cursor: not-allowed;
+        box-shadow: none;
+    }
+
+    .pagination-modern .page-item.disabled .page-link:hover {
+        transform: none;
+        background: #f8f9fa;
+        color: #adb5bd;
+    }
+
+    /* 分页样式 */
+    .pagination {
+        margin-top: 40px;
+        justify-content: center;
+    }
+
+    .pagination .page-link {
+        border-radius: 8px;
+        margin: 0 4px;
+        color: var(--text-primary);
+        border: none;
+        padding: 10px 16px;
+        background: #fff;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    }
+
+    .pagination .page-item.active .page-link {
+        background: var(--primary-color);
+        color: #fff;
+    }
+</style>
+{/block}
+
+{block name="content"}
+<!-- 页面标题 -->
+<div class="page-header">
+    <div class="header-decoration d1"></div>
+    <div class="header-decoration d2"></div>
+    <div class="header-decoration d3"></div>
+    <div class="container">
+        <div class="page-icon">
+            <i class="bi bi-newspaper"></i>
+        </div>
+        <h1>新闻中心</h1>
+        <p class="page-subtitle">了解公司最新动态，掌握行业前沿资讯。我们持续分享技术见解与行业洞察，与您共同成长。</p>
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="{:url('/')}"><i class="bi bi-house me-1"></i>首页</a></li>
+                <li class="breadcrumb-item active">新闻中心</li>
+            </ol>
+        </nav>
+    </div>
+</div>
+
+<section class="py-5" style="background: var(--bg-light);" id="news-section">
+    <div class="container">
+        <!-- 分类筛选 -->
+        <div class="category-tabs" id="category-tabs">
+            <span class="tab-label"><i class="bi bi-funnel me-1"></i>分类：</span>
+            <a href="{:url('/news')}" class="tab-item {if !$category_id}active{/if}" data-category="">全部新闻</a>
+            {volist name="categories" id="cat"}
+            <a href="{:url('/news', ['category_id' => $cat.id])}"
+                class="tab-item {if $category_id == $cat.id}active{/if}" data-category="{$cat.id}">{$cat.name}</a>
+            {/volist}
+        </div>
+
+        <!-- 新闻列表 -->
+        <div class="row g-4" id="news-list">
+            {volist name="list" id="item"}
+            <div class="col-lg-4 col-md-6">
+                <article class="news-card">
+                    <div class="news-thumb">
+                        {if $item.cover}
+                        <a href="{:url('/news/'.$item.id)}">
+                            <img src="{$item.cover}" alt="{$item.title}">
+                        </a>
+                        {else/}
+                        <div class="news-thumb-placeholder">
+                            <i class="bi bi-newspaper"></i>
+                        </div>
+                        {/if}
+                        <div class="news-date">
+                            <i class="bi bi-calendar me-1"></i>
+                            {$item.published_at|format_time='Y-m-d'}
+                        </div>
+                        {if $item.is_top}
+                        <span class="top-badge"><i class="bi bi-pin-angle me-1"></i>置顶</span>
+                        {/if}
+                    </div>
+                    <div class="news-body">
+                        <h3 class="news-title">
+                            <a href="{:url('/news/'.$item.id)}">{$item.title}</a>
+                        </h3>
+                        <p class="news-excerpt">{$item.summary|str_cut=60}</p>
+                        <div class="news-meta">
+                            <span><i class="bi bi-eye"></i>{$item.views} 阅读</span>
+                            {if $item.author}
+                            <span><i class="bi bi-person"></i>{$item.author}</span>
+                            {/if}
+                        </div>
+                    </div>
+                </article>
+            </div>
+            {/volist}
+        </div>
+
+        {empty name="list"}
+        <div class="empty-state">
+            <i class="bi bi-newspaper"></i>
+            <h4>暂无新闻内容</h4>
+            <p>敬请期待更多精彩内容</p>
+        </div>
+        {/empty}
+
+        <!-- 分页 -->
+        {if $list->lastPage() > 1}
+        <div class="d-flex justify-content-center mt-5">
+            <nav aria-label="分页导航">
+                <ul class="pagination pagination-modern">
+                    {php}
+                    $currentPage = $list->currentPage();
+                    $lastPage = $list->lastPage();
+                    $total = $list->total();
+                    {/php}
+
+                    <!-- 上一页 -->
+                    {if $currentPage > 1}
+                    <li class="page-item">
+                        <a class="page-link" href="{:url('/news', array_merge(request()->get(), ['page' => $currentPage - 1]))}" aria-label="上一页">
+                            <i class="bi bi-chevron-left"></i>
+                        </a>
+                    </li>
+                    {else/}
+                    <li class="page-item disabled">
+                        <span class="page-link" aria-label="上一页">
+                            <i class="bi bi-chevron-left"></i>
+                        </span>
+                    </li>
+                    {/if}
+
+                    <!-- 页码 -->
+                    {if $lastPage <= 7}
+                        <!-- 总页数不超过7页，显示所有页码 -->
+                        {for start="1" end="$lastPage + 1"}
+                        <li class="page-item {if $currentPage == $i}active{/if}">
+                            <a class="page-link" href="{:url('/news', array_merge(request()->get(), ['page' => $i]))}">{$i}</a>
+                        </li>
+                        {/for}
+                    {else/}
+                        <!-- 总页数超过7页，智能显示 -->
+                        {if $currentPage <= 4}
+                            <!-- 当前页在前4页 -->
+                            {for start="1" end="6"}
+                            <li class="page-item {if $currentPage == $i}active{/if}">
+                                <a class="page-link" href="{:url('/news', array_merge(request()->get(), ['page' => $i]))}">{$i}</a>
+                            </li>
+                            {/for}
+                            <li class="page-item disabled">
+                                <span class="page-link">...</span>
+                            </li>
+                            <li class="page-item">
+                                <a class="page-link" href="{:url('/news', array_merge(request()->get(), ['page' => $lastPage]))}">{$lastPage}</a>
+                            </li>
+                        {elseif $currentPage >= $lastPage - 3}
+                            <!-- 当前页在后4页 -->
+                            <li class="page-item">
+                                <a class="page-link" href="{:url('/news', array_merge(request()->get(), ['page' => 1]))}">1</a>
+                            </li>
+                            <li class="page-item disabled">
+                                <span class="page-link">...</span>
+                            </li>
+                            {for start="$lastPage - 4" end="$lastPage + 1"}
+                            <li class="page-item {if $currentPage == $i}active{/if}">
+                                <a class="page-link" href="{:url('/news', array_merge(request()->get(), ['page' => $i]))}">{$i}</a>
+                            </li>
+                            {/for}
+                        {else/}
+                            <!-- 当前页在中间 -->
+                            <li class="page-item">
+                                <a class="page-link" href="{:url('/news', array_merge(request()->get(), ['page' => 1]))}">1</a>
+                            </li>
+                            <li class="page-item disabled">
+                                <span class="page-link">...</span>
+                            </li>
+                            {for start="$currentPage - 1" end="$currentPage + 2"}
+                            <li class="page-item {if $currentPage == $i}active{/if}">
+                                <a class="page-link" href="{:url('/news', array_merge(request()->get(), ['page' => $i]))}">{$i}</a>
+                            </li>
+                            {/for}
+                            <li class="page-item disabled">
+                                <span class="page-link">...</span>
+                            </li>
+                            <li class="page-item">
+                                <a class="page-link" href="{:url('/news', array_merge(request()->get(), ['page' => $lastPage]))}">{$lastPage}</a>
+                            </li>
+                        {/if}
+                    {/if}
+
+                    <!-- 下一页 -->
+                    {if $currentPage < $lastPage}
+                    <li class="page-item">
+                        <a class="page-link" href="{:url('/news', array_merge(request()->get(), ['page' => $currentPage + 1]))}" aria-label="下一页">
+                            <i class="bi bi-chevron-right"></i>
+                        </a>
+                    </li>
+                    {else/}
+                    <li class="page-item disabled">
+                        <span class="page-link" aria-label="下一页">
+                            <i class="bi bi-chevron-right"></i>
+                        </span>
+                    </li>
+                    {/if}
+                </ul>
+            </nav>
+        </div>
+
+        <!-- 分页信息 -->
+        <div class="text-center mt-3">
+            <small class="text-muted">
+                共 {$total} 条记录，第 {$currentPage} / {$lastPage} 页
+            </small>
+        </div>
+        {/if}
+        </div>
+    </div>
+</section>
+{/block}
+
+{block name="js"}
+<script>
+    $(function () {
+        // 分类切换 - AJAX 加载，不跳转到顶部
+        $('#category-tabs').on('click', '.tab-item', function (e) {
+            e.preventDefault();
+            var $this = $(this);
+            var url = $this.attr('href');
+
+            // 更新激活状态
+            $('#category-tabs .tab-item').removeClass('active');
+            $this.addClass('active');
+
+            // 显示加载状态
+            $('#news-list').css('opacity', '0.5');
+
+            // AJAX 请求
+            $.get(url, function (html) {
+                var $html = $(html);
+                var newContent = $html.find('#news-list').html();
+                if (newContent) {
+                    $('#news-list').html(newContent);
+                }
+                $('#news-list').css('opacity', '1');
+
+                // 更新浏览器 URL
+                if (history.pushState) {
+                    history.pushState(null, null, url);
+                }
+            }).fail(function () {
+                $('#news-list').css('opacity', '1');
+                showToast('加载失败，请重试', 'error');
+            });
+        });
+    });
+</script>
+{/block}

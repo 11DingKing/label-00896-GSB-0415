@@ -1,0 +1,547 @@
+{extend name="index/layout/base" /}
+
+{block name="title"}关于我们 - {$site_name}{/block}
+
+{block name="css"}
+<style>
+    .about-intro {
+        background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+    }
+
+    /* 公司简介 */
+    .about-section {
+        padding: 80px 0;
+    }
+
+    .about-badge {
+        display: inline-block;
+        background: linear-gradient(135deg, #f0f5ff, #d6e4ff);
+        color: var(--primary-color);
+        padding: 8px 20px;
+        border-radius: 25px;
+        font-size: 13px;
+        font-weight: 600;
+        margin-bottom: 20px;
+    }
+
+    .about-section h2 {
+        font-size: 36px;
+        font-weight: 700;
+        margin-bottom: 24px;
+        line-height: 1.3;
+    }
+
+    .about-text {
+        color: var(--text-secondary);
+        font-size: 16px;
+        line-height: 2;
+        margin-bottom: 24px;
+    }
+
+    .about-features {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 16px;
+        margin-top: 30px;
+    }
+
+    .about-features .feature {
+        display: flex;
+        align-items: center;
+        background: #f8fafc;
+        padding: 12px 20px;
+        border-radius: 10px;
+    }
+
+    .about-features .feature i {
+        color: var(--primary-color);
+        margin-right: 10px;
+        font-size: 20px;
+    }
+
+    .about-features .feature span {
+        font-weight: 500;
+    }
+
+    .about-visual {
+        position: relative;
+    }
+
+    .about-visual .main-card {
+        background: linear-gradient(135deg, #1890ff 0%, #096dd9 100%);
+        border-radius: 24px;
+        padding: 60px 40px;
+        text-align: center;
+        color: #fff;
+        box-shadow: 0 20px 60px rgba(24, 144, 255, 0.3);
+    }
+
+    .about-visual .main-card i {
+        font-size: 100px;
+        margin-bottom: 24px;
+        opacity: 0.9;
+    }
+
+    .about-visual .main-card h3 {
+        font-size: 24px;
+        font-weight: 700;
+        margin-bottom: 8px;
+    }
+
+    .about-visual .main-card p {
+        opacity: 0.9;
+    }
+
+    /* 价值观 */
+    .value-card {
+        background: #fff;
+        border-radius: 20px;
+        padding: 40px 30px;
+        text-align: center;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+        transition: all 0.4s ease;
+        height: 100%;
+        border: 2px solid transparent;
+    }
+
+    .value-card:hover {
+        transform: translateY(-10px);
+        box-shadow: 0 20px 50px rgba(0,0,0,0.12);
+        border-color: var(--primary-color);
+    }
+
+    .value-card .value-icon {
+        width: 80px;
+        height: 80px;
+        border-radius: 20px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 24px;
+        font-size: 36px;
+        color: #fff;
+    }
+
+    .value-card h4 {
+        font-size: 20px;
+        font-weight: 600;
+        margin-bottom: 16px;
+    }
+
+    .value-card p {
+        color: var(--text-secondary);
+        font-size: 14px;
+        line-height: 1.8;
+        margin: 0;
+    }
+
+    /* 发展历程 */
+    .timeline-section {
+        background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+        color: #fff;
+        padding: 80px 0;
+    }
+
+    .timeline-section .section-title h2 {
+        color: #fff;
+    }
+
+    .timeline-section .section-title p {
+        color: rgba(255,255,255,0.7);
+    }
+
+    .timeline {
+        position: relative;
+        display: flex;
+        justify-content: space-between;
+        margin-top: 60px;
+    }
+
+    .timeline::before {
+        content: '';
+        position: absolute;
+        left: 0;
+        right: 0;
+        top: 50%;
+        height: 4px;
+        background: linear-gradient(90deg, var(--primary-color), #40a9ff, #69c0ff);
+        border-radius: 2px;
+    }
+
+    .timeline-item {
+        position: relative;
+        text-align: center;
+        flex: 1;
+    }
+
+    .timeline-item .timeline-dot {
+        width: 24px;
+        height: 24px;
+        background: var(--primary-color);
+        border: 4px solid #fff;
+        border-radius: 50%;
+        margin: 0 auto 20px;
+        position: relative;
+        box-shadow: 0 0 0 4px rgba(24, 144, 255, 0.3);
+    }
+
+    .timeline-item .year {
+        font-size: 28px;
+        font-weight: 700;
+        color: var(--primary-color);
+        margin-bottom: 12px;
+    }
+
+    .timeline-item h5 {
+        font-size: 18px;
+        font-weight: 600;
+        margin-bottom: 8px;
+    }
+
+    .timeline-item p {
+        font-size: 13px;
+        opacity: 0.8;
+        max-width: 180px;
+        margin: 0 auto;
+        line-height: 1.6;
+    }
+
+    /* 团队介绍 */
+    .team-member {
+        text-align: center;
+        background: #fff;
+        border-radius: 20px;
+        padding: 40px 30px;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+        transition: all 0.3s;
+    }
+
+    .team-member:hover {
+        transform: translateY(-8px);
+        box-shadow: 0 16px 40px rgba(0,0,0,0.12);
+    }
+
+    .team-member .avatar {
+        width: 100px;
+        height: 100px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, #1890ff 0%, #40a9ff 100%);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 20px;
+        font-size: 42px;
+        color: #fff;
+        box-shadow: 0 10px 30px rgba(24, 144, 255, 0.3);
+    }
+
+    .team-member h5 {
+        font-size: 18px;
+        font-weight: 600;
+        margin-bottom: 4px;
+    }
+
+    .team-member .position {
+        color: var(--primary-color);
+        font-size: 14px;
+        font-weight: 500;
+        margin-bottom: 12px;
+    }
+
+    .team-member p {
+        color: var(--text-secondary);
+        font-size: 14px;
+        line-height: 1.6;
+    }
+    /* CTA区域 */
+    .cta-section {
+        background: linear-gradient(135deg, #1890ff 0%, #096dd9 100%);
+        padding: 80px 0;
+        color: #fff;
+        text-align: center;
+    }
+
+    .cta-section h2 {
+        font-size: 36px;
+        font-weight: 700;
+        margin-bottom: 16px;
+    }
+
+    .cta-section p {
+        font-size: 18px;
+        opacity: 0.9;
+        margin-bottom: 30px;
+    }
+
+    .cta-section .btn {
+        padding: 16px 40px;
+        font-size: 16px;
+        border-radius: 30px;
+    }
+
+    @media (max-width: 992px) {
+        .timeline {
+            flex-direction: column;
+            padding-left: 30px;
+        }
+
+        .timeline::before {
+            width: 4px;
+            height: 100%;
+            left: 0;
+            top: 0;
+        }
+
+        .timeline-item {
+            text-align: left;
+            padding-left: 40px;
+            margin-bottom: 40px;
+        }
+
+        .timeline-item .timeline-dot {
+            position: absolute;
+            left: -12px;
+            top: 0;
+            margin: 0;
+        }
+
+        .timeline-item p {
+            margin: 0;
+            max-width: 100%;
+        }
+
+    }
+
+    @media (max-width: 768px) {
+        .company-stats .stat-number {
+            font-size: 36px;
+        }
+
+        .about-section h2 {
+            font-size: 28px;
+        }
+    }
+</style>
+{/block}
+
+{block name="content"}
+<!-- 页面标题 -->
+<div class="page-header">
+    <div class="header-decoration d1"></div>
+    <div class="header-decoration d2"></div>
+    <div class="header-decoration d3"></div>
+    <div class="container">
+        <div class="page-icon">
+            <i class="bi bi-building-gear"></i>
+        </div>
+        <h1>关于我们</h1>
+        <p class="page-subtitle">专注企业数字化转型，以创新技术驱动业务增长，致力于成为您最值得信赖的合作伙伴。</p>
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="{:url('/')}"><i class="bi bi-house me-1"></i>首页</a></li>
+                <li class="breadcrumb-item active">关于我们</li>
+            </ol>
+        </nav>
+    </div>
+</div>
+
+<!-- 公司简介 -->
+<section class="about-section">
+    <div class="container">
+        <div class="row align-items-center g-5">
+            <div class="col-lg-6">
+                <span class="about-badge"><i class="bi bi-building me-2"></i>公司简介</span>
+                <h2>专注企业数字化转型的<br>科技服务商</h2>
+                {if $page}
+                <div class="about-text">
+                    {$page.content|raw}
+                </div>
+                {else}
+                <p class="about-text">
+                    我们是一家专注于企业数字化转型的科技公司，成立于2014年，总部位于北京。公司致力于为客户提供专业的网站建设、系统开发、软件定制和技术咨询服务。
+                </p>
+                <p class="about-text">
+                    多年来，我们始终秉承"客户至上、质量第一"的服务理念，凭借专业的技术实力和丰富的项目经验，已成功服务超过500家企业客户，涵盖政府、金融、教育、医疗、制造等多个行业领域。
+                </p>
+                {/if}
+                <div class="about-features">
+                    <div class="feature">
+                        <i class="bi bi-check-circle"></i>
+                        <span>技术实力雄厚</span>
+                    </div>
+                    <div class="feature">
+                        <i class="bi bi-check-circle"></i>
+                        <span>服务体系完善</span>
+                    </div>
+                    <div class="feature">
+                        <i class="bi bi-check-circle"></i>
+                        <span>项目经验丰富</span>
+                    </div>
+                    <div class="feature">
+                        <i class="bi bi-check-circle"></i>
+                        <span>售后响应及时</span>
+                    </div>
+                </div>
+                <a href="{:url('/contact')}" class="btn btn-primary btn-lg mt-4">
+                    <i class="bi bi-telephone me-2"></i>联系我们
+                </a>
+            </div>
+            <div class="col-lg-6">
+                <div class="about-visual">
+                    <div class="main-card">
+                        <i class="bi bi-building"></i>
+                        <h3>{:get_config('contact.company_name', '企业名称')}</h3>
+                        <p>创新 · 专业 · 可靠 · 共赢</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- 核心价值观 -->
+<section class="py-5" style="background: var(--bg-light);">
+    <div class="container">
+        <div class="section-title">
+            <h2>核心价值观</h2>
+            <p>我们坚守的信念和追求</p>
+        </div>
+        <div class="row g-4">
+            <div class="col-lg-3 col-md-6">
+                <div class="value-card">
+                    <div class="value-icon" style="background: linear-gradient(135deg, #1890ff, #40a9ff);">
+                        <i class="bi bi-lightbulb"></i>
+                    </div>
+                    <h4>创新驱动</h4>
+                    <p>持续探索前沿技术，为客户创造更大价值，引领行业发展潮流</p>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-6">
+                <div class="value-card">
+                    <div class="value-icon" style="background: linear-gradient(135deg, #52c41a, #73d13d);">
+                        <i class="bi bi-people"></i>
+                    </div>
+                    <h4>客户至上</h4>
+                    <p>以客户需求为导向，提供优质服务体验，客户成功即我们的成功</p>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-6">
+                <div class="value-card">
+                    <div class="value-icon" style="background: linear-gradient(135deg, #faad14, #ffc53d);">
+                        <i class="bi bi-award"></i>
+                    </div>
+                    <h4>追求卓越</h4>
+                    <p>精益求精，不断超越自我，追求每一个细节的完美呈现</p>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-6">
+                <div class="value-card">
+                    <div class="value-icon" style="background: linear-gradient(135deg, #eb2f96, #f759ab);">
+                        <i class="bi bi-heart"></i>
+                    </div>
+                    <h4>诚信共赢</h4>
+                    <p>诚实守信，与客户共同成长，实现长期稳定的合作共赢</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- 发展历程 -->
+<section class="timeline-section">
+    <div class="container">
+        <div class="section-title">
+            <h2>发展历程</h2>
+            <p>十年砥砺前行，见证每一步成长</p>
+        </div>
+        <div class="timeline">
+            <div class="timeline-item">
+                <div class="timeline-dot"></div>
+                <div class="year">2014</div>
+                <h5>公司成立</h5>
+                <p>正式成立，专注企业网站建设</p>
+            </div>
+            <div class="timeline-item">
+                <div class="timeline-dot"></div>
+                <div class="year">2017</div>
+                <h5>业务拓展</h5>
+                <p>进入企业软件开发领域</p>
+            </div>
+            <div class="timeline-item">
+                <div class="timeline-dot"></div>
+                <div class="year">2020</div>
+                <h5>规模壮大</h5>
+                <p>团队突破50人，客户超300家</p>
+            </div>
+            <div class="timeline-item">
+                <div class="timeline-dot"></div>
+                <div class="year">2024</div>
+                <h5>全新升级</h5>
+                <p>推出全新产品线，服务500+客户</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- 团队介绍 -->
+<section class="py-5" style="background: var(--bg-light);">
+    <div class="container">
+        <div class="section-title">
+            <h2>核心团队</h2>
+            <p>专业的团队是我们最宝贵的财富</p>
+        </div>
+        <div class="row g-4">
+            <div class="col-lg-3 col-md-6">
+                <div class="team-member">
+                    <div class="avatar">
+                        <i class="bi bi-person"></i>
+                    </div>
+                    <h5>张总</h5>
+                    <div class="position">创始人 & CEO</div>
+                    <p>15年互联网行业经验，专注企业数字化转型战略规划</p>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-6">
+                <div class="team-member">
+                    <div class="avatar">
+                        <i class="bi bi-person"></i>
+                    </div>
+                    <h5>李总</h5>
+                    <div class="position">技术总监</div>
+                    <p>资深架构师，擅长大型分布式系统设计与性能优化</p>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-6">
+                <div class="team-member">
+                    <div class="avatar">
+                        <i class="bi bi-person"></i>
+                    </div>
+                    <h5>王总</h5>
+                    <div class="position">产品总监</div>
+                    <p>10年产品设计经验，注重用户体验和商业价值平衡</p>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-6">
+                <div class="team-member">
+                    <div class="avatar">
+                        <i class="bi bi-person"></i>
+                    </div>
+                    <h5>陈总</h5>
+                    <div class="position">运营总监</div>
+                    <p>精通市场运营和客户成功体系，助力客户业务增长</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- CTA区域 -->
+<section class="cta-section">
+    <div class="container">
+        <h2>准备开始您的数字化转型之旅？</h2>
+        <p>联系我们，让专业团队为您提供量身定制的解决方案</p>
+        <a href="{:url('/contact')}" class="btn btn-light btn-lg">
+            <i class="bi bi-telephone me-2"></i>立即咨询
+        </a>
+    </div>
+</section>
+{/block}

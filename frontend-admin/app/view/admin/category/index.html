@@ -1,0 +1,75 @@
+{extend name="../admin/layout/base" /}
+
+{block name="title"}分类管理{/block}
+
+{block name="breadcrumb"}
+<li class="breadcrumb-item">内容管理</li>
+<li class="breadcrumb-item active">分类管理</li>
+{/block}
+
+{block name="content"}
+<div class="card">
+    <div class="card-header">
+        <ul class="nav nav-tabs card-header-tabs">
+            <li class="nav-item">
+                <a class="nav-link {if $type == 'news'}active{/if}" href="/admin/category?type=news">新闻分类</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link {if $type == 'product'}active{/if}" href="/admin/category?type=product">产品分类</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link {if $type == 'case'}active{/if}" href="/admin/category?type=case">案例分类</a>
+            </li>
+        </ul>
+    </div>
+    <div class="card-body">
+        <div class="mb-3">
+            <a href="/admin/category/create?type={$type}" class="btn btn-primary btn-sm">
+                <i class="bi bi-plus-lg me-1"></i>添加分类
+            </a>
+        </div>
+        <div class="table-responsive">
+            <table class="table table-hover mb-0">
+                <thead>
+                    <tr>
+                        <th width="60">ID</th>
+                        <th>分类名称</th>
+                        <th width="200">描述</th>
+                        <th width="80">排序</th>
+                        <th width="80">状态</th>
+                        <th width="150">创建时间</th>
+                        <th width="150">操作</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {volist name="list" id="item"}
+                    <tr>
+                        <td>{$item.id}</td>
+                        <td>{$item.name}</td>
+                        <td>{$item.description|str_cut=30}</td>
+                        <td>{$item.sort}</td>
+                        <td>
+                            {if $item.status == 1}
+                            <span class="status-badge success">正常</span>
+                            {else}
+                            <span class="status-badge danger">禁用</span>
+                            {/if}
+                        </td>
+                        <td>{$item.created_at|format_time}</td>
+                        <td class="action-btns">
+                            <a href="/admin/category/edit/{$item.id}" class="btn btn-sm btn-outline-primary">编辑</a>
+                            <button type="button" class="btn btn-sm btn-outline-danger" onclick="confirmDelete('/admin/category/delete/{$item.id}')">删除</button>
+                        </td>
+                    </tr>
+                    {/volist}
+                    {empty name="list"}
+                    <tr>
+                        <td colspan="7" class="text-center text-muted py-5">暂无分类</td>
+                    </tr>
+                    {/empty}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{/block}

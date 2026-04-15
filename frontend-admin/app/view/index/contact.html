@@ -1,0 +1,500 @@
+{extend name="index/layout/base" /}
+
+{block name="title"}联系我们 - {$site_name}{/block}
+
+{block name="css"}
+<style>
+    .contact-card {
+        background: #fff;
+        border-radius: 16px;
+        padding: 30px;
+        text-align: center;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+        transition: all 0.3s ease;
+        height: 100%;
+    }
+
+    .contact-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 12px 40px rgba(0,0,0,0.12);
+    }
+
+    .contact-card .contact-icon {
+        width: 70px;
+        height: 70px;
+        border-radius: 16px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 20px;
+        font-size: 28px;
+        color: #fff;
+    }
+
+    .contact-card h5 {
+        font-size: 16px;
+        font-weight: 600;
+        margin-bottom: 12px;
+    }
+
+    .contact-card p {
+        color: var(--text-secondary);
+        font-size: 14px;
+        margin: 0;
+    }
+
+    .form-section {
+        background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+    }
+
+    .form-card {
+        background: #fff;
+        border-radius: 20px;
+        box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+        overflow: hidden;
+    }
+
+    .form-info {
+        background: linear-gradient(135deg, #1890ff 0%, #096dd9 100%);
+        color: #fff;
+        padding: 40px;
+    }
+
+    .form-info h3 {
+        font-size: 24px;
+        font-weight: 600;
+        margin-bottom: 16px;
+    }
+
+    .form-info p {
+        opacity: 0.9;
+        line-height: 1.8;
+    }
+
+    .info-item {
+        display: flex;
+        align-items: center;
+        margin-bottom: 20px;
+    }
+
+    .info-item:last-child {
+        margin-bottom: 0;
+    }
+
+    .info-item .info-icon {
+        width: 48px;
+        height: 48px;
+        border-radius: 12px;
+        background: rgba(255,255,255,0.2);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-right: 16px;
+        font-size: 20px;
+        flex-shrink: 0;
+    }
+
+    .info-item .info-text h6 {
+        font-size: 14px;
+        opacity: 0.8;
+        margin-bottom: 4px;
+        font-weight: 400;
+    }
+
+    .info-item .info-text p {
+        font-size: 16px;
+        margin: 0;
+        opacity: 1;
+    }
+
+    .form-content {
+        padding: 40px;
+    }
+
+    .form-content h3 {
+        font-size: 24px;
+        font-weight: 600;
+        margin-bottom: 8px;
+    }
+
+    .form-content .subtitle {
+        color: var(--text-secondary);
+        margin-bottom: 30px;
+    }
+
+    .form-control:focus {
+        border-color: var(--primary-color);
+        box-shadow: 0 0 0 3px rgba(24, 144, 255, 0.1);
+    }
+
+    .faq-section {
+        background: #fff;
+    }
+
+    .faq-item {
+        border: 1px solid #e2e8f0;
+        border-radius: 12px;
+        margin-bottom: 16px;
+        overflow: hidden;
+        transition: all 0.3s ease;
+    }
+
+    .faq-item:hover {
+        border-color: var(--primary-color);
+        box-shadow: 0 4px 12px rgba(24, 144, 255, 0.1);
+    }
+
+    .faq-item .faq-question {
+        padding: 20px;
+        font-weight: 600;
+        display: flex;
+        align-items: center;
+        cursor: pointer;
+    }
+
+    .faq-item .faq-question i {
+        color: var(--primary-color);
+        margin-right: 12px;
+        font-size: 20px;
+    }
+
+    .faq-item .faq-answer {
+        padding: 0 20px 20px 52px;
+        color: var(--text-secondary);
+        line-height: 1.8;
+    }
+</style>
+{/block}
+
+{block name="content"}
+<!-- 页面标题 -->
+<div class="page-header">
+    <div class="header-decoration d1"></div>
+    <div class="header-decoration d2"></div>
+    <div class="header-decoration d3"></div>
+    <div class="container">
+        <div class="page-icon">
+            <i class="bi bi-headset"></i>
+        </div>
+        <h1>联系我们</h1>
+        <p class="page-subtitle">有任何问题或需求？我们随时准备为您提供专业的咨询和服务，期待与您建立长期合作关系。</p>
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="{:url('/')}"><i class="bi bi-house me-1"></i>首页</a></li>
+                <li class="breadcrumb-item active">联系我们</li>
+            </ol>
+        </nav>
+    </div>
+</div>
+
+<!-- 联系方式卡片 -->
+<section class="py-5" style="position: relative; z-index: 10;">
+    <div class="container">
+        <div class="row g-4">
+            <div class="col-lg-3 col-md-6">
+                <div class="contact-card">
+                    <div class="contact-icon" style="background: linear-gradient(135deg, #1890ff, #40a9ff);">
+                        <i class="bi bi-telephone"></i>
+                    </div>
+                    <h5>联系电话</h5>
+                    <p>{$company_phone}</p>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-6">
+                <div class="contact-card">
+                    <div class="contact-icon" style="background: linear-gradient(135deg, #52c41a, #73d13d);">
+                        <i class="bi bi-envelope"></i>
+                    </div>
+                    <h5>电子邮箱</h5>
+                    <p>{$company_email}</p>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-6">
+                <div class="contact-card">
+                    <div class="contact-icon" style="background: linear-gradient(135deg, #faad14, #ffc53d);">
+                        <i class="bi bi-geo-alt"></i>
+                    </div>
+                    <h5>公司地址</h5>
+                    <p>{$company_address}</p>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-6">
+                <div class="contact-card">
+                    <div class="contact-icon" style="background: linear-gradient(135deg, #eb2f96, #f759ab);">
+                        <i class="bi bi-clock"></i>
+                    </div>
+                    <h5>工作时间</h5>
+                    <p>周一至周五 9:00-18:00</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- 留言表单 -->
+<section class="form-section py-5">
+    <div class="container">
+        <div class="form-card">
+            <div class="row g-0">
+                <div class="col-lg-5">
+                    <div class="form-info h-100">
+                        <h3>联系信息</h3>
+                        <p class="mb-5">我们随时准备为您提供帮助。请通过以下方式与我们取得联系，或填写右侧表单。</p>
+
+                        <div class="info-item">
+                            <div class="info-icon">
+                                <i class="bi bi-building"></i>
+                            </div>
+                            <div class="info-text">
+                                <h6>公司名称</h6>
+                                <p>{$company_name}</p>
+                            </div>
+                        </div>
+
+                        <div class="info-item">
+                            <div class="info-icon">
+                                <i class="bi bi-geo-alt"></i>
+                            </div>
+                            <div class="info-text">
+                                <h6>公司地址</h6>
+                                <p>{$company_address}</p>
+                            </div>
+                        </div>
+
+                        <div class="info-item">
+                            <div class="info-icon">
+                                <i class="bi bi-telephone"></i>
+                            </div>
+                            <div class="info-text">
+                                <h6>联系电话</h6>
+                                <p>{$company_phone}</p>
+                            </div>
+                        </div>
+
+                        <div class="info-item">
+                            <div class="info-icon">
+                                <i class="bi bi-envelope"></i>
+                            </div>
+                            <div class="info-text">
+                                <h6>电子邮箱</h6>
+                                <p>{$company_email}</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-7">
+                    <div class="form-content">
+                        <h3>在线留言</h3>
+
+                        <p class="subtitle">请填写以下表单，我们会在24小时内与您联系</p>
+
+                        <form id="contact-form" action="{:url('/message')}" method="post" novalidate>
+                            <input type="hidden" name="_token" value="{$csrf_token}">
+                            <div class="row g-4">
+                                <div class="col-md-6">
+                                    <div class="form-group-wrapper">
+                                        <label class="form-label">您的姓名 <span class="text-danger">*</span></label>
+                                        <input type="text" class="form-control form-control-lg" name="name" id="name" placeholder="请输入您的姓名">
+                                        <div class="invalid-feedback">请输入您的姓名（至少2个字符）</div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group-wrapper">
+                                        <label class="form-label">联系电话</label>
+                                        <input type="tel" class="form-control form-control-lg" name="phone" id="phone" placeholder="请输入联系电话">
+                                        <div class="invalid-feedback">请输入正确的手机号码（11位数字）</div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group-wrapper">
+                                        <label class="form-label">电子邮箱</label>
+                                        <input type="email" class="form-control form-control-lg" name="email" id="email" placeholder="请输入电子邮箱">
+                                        <div class="invalid-feedback">请输入正确的邮箱地址</div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group-wrapper">
+                                        <label class="form-label">公司名称</label>
+                                        <input type="text" class="form-control form-control-lg" name="company" placeholder="请输入公司名称">
+                                    </div>
+                                </div>
+                                <div class="col-12">
+                                    <div class="form-group-wrapper">
+                                        <label class="form-label">留言主题</label>
+                                        <input type="text" class="form-control form-control-lg" name="subject" placeholder="请输入留言主题">
+                                    </div>
+                                </div>
+                                <div class="col-12">
+                                    <div class="form-group-wrapper">
+                                        <label class="form-label">留言内容 <span class="text-danger">*</span></label>
+                                        <textarea class="form-control" name="content" id="content" rows="5" placeholder="请详细描述您的需求或问题（至少10个字符）..."></textarea>
+                                        <div class="invalid-feedback">请输入留言内容（至少10个字符）</div>
+                                    </div>
+                                </div>
+                                <div class="col-12">
+                                    <button type="submit" class="btn btn-primary btn-lg px-5">
+                                        <i class="bi bi-send me-2"></i>提交留言
+                                    </button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- 常见问题 -->
+<section class="faq-section py-5">
+    <div class="container">
+        <div class="section-title">
+            <h2>常见问题</h2>
+            <p>您可能关心的一些问题</p>
+        </div>
+        <div class="row">
+            <div class="col-lg-8 mx-auto">
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <i class="bi bi-question-circle"></i>
+                        如何获取技术支持？
+                    </div>
+                    <div class="faq-answer">
+                        您可以通过电话、邮件或在线留言的方式联系我们的技术支持团队。我们的工作时间为周一至周五 9:00-18:00，紧急问题可拨打24小时服务热线。
+                    </div>
+                </div>
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <i class="bi bi-question-circle"></i>
+                        项目合作流程是怎样的？
+                    </div>
+                    <div class="faq-answer">
+                        我们的项目合作流程包括：需求沟通 → 方案设计 → 合同签订 → 项目开发 → 测试验收 → 上线运维。整个过程透明高效，确保项目按时保质交付。
+                    </div>
+                </div>
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <i class="bi bi-question-circle"></i>
+                        售后服务包含哪些内容？
+                    </div>
+                    <div class="faq-answer">
+                        我们提供完善的售后服务，包括：系统bug修复、功能优化建议、使用培训、数据备份指导、安全更新提醒等。部分服务在保修期内免费提供。
+                    </div>
+                </div>
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <i class="bi bi-question-circle"></i>
+                        可以定制开发吗？
+                    </div>
+                    <div class="faq-answer">
+                        当然可以！我们提供灵活的定制开发服务，可以根据您的具体需求进行个性化开发。请联系我们详细沟通您的需求，我们会提供专业的解决方案。
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{/block}
+
+{block name="js"}
+<script>
+    $('#contact-form').on('submit', function(e) {
+        e.preventDefault();
+
+        // 表单验证
+        let isValid = true;
+        let firstError = null;
+        const $form = $(this);
+        const $btn = $form.find('button[type="submit"]');
+        const btnText = $btn.html();
+
+        // 清除所有错误状态
+        $form.find('.is-invalid').removeClass('is-invalid');
+
+        // 验证姓名（必填，2-50个字符）
+        const $name = $('#name');
+        const name = $name.val().trim();
+        if (!name || name.length < 2) {
+            $name.addClass('is-invalid');
+            isValid = false;
+            if (!firstError) firstError = $name;
+        }
+
+        // 验证手机号（非必填，但填写时需格式正确）
+        const $phone = $('#phone');
+        const phone = $phone.val().trim();
+        if (phone && !isValidPhone(phone)) {
+            $phone.addClass('is-invalid');
+            isValid = false;
+            if (!firstError) firstError = $phone;
+        }
+
+        // 验证邮箱（非必填，但填写时需格式正确）
+        const $email = $('#email');
+        const email = $email.val().trim();
+        if (email && !isValidEmail(email)) {
+            $email.addClass('is-invalid');
+            isValid = false;
+            if (!firstError) firstError = $email;
+        }
+
+        // 验证留言内容（必填，至少10个字符）
+        const $content = $('#content');
+        const content = $content.val().trim();
+        if (!content || content.length < 10) {
+            $content.addClass('is-invalid');
+            isValid = false;
+            if (!firstError) firstError = $content;
+        }
+
+        if (!isValid) {
+            showToast('请检查表单填写是否正确', 'warning');
+            // 聚焦到第一个错误字段
+            if (firstError) {
+                firstError.focus();
+            }
+            return;
+        }
+
+        $btn.prop('disabled', true).html('<span class="spinner-border spinner-border-sm me-2"></span>提交中...');
+
+        $.ajax({
+            url: $form.attr('action'),
+            type: 'POST',
+            data: $form.serialize(),
+            dataType: 'json',
+            success: function(res) {
+                if (res.code === 1) {
+                    showToast(res.msg, 'success');
+                    $('#contact-form')[0].reset();
+                    // 移除所有验证状态
+                    $form.find('.is-invalid').removeClass('is-invalid');
+                    // 提交成功后刷新页面以获取新 Token
+                    setTimeout(function() {
+                        location.reload();
+                    }, 2000);
+                } else {
+                    showToast(res.msg, 'error');
+                    // 如果是 Token 过期，自动刷新页面
+                    if (res.msg.indexOf('过期') !== -1 || res.msg.indexOf('刷新') !== -1) {
+                        setTimeout(function() {
+                            location.reload();
+                        }, 1500);
+                    }
+                }
+            },
+            error: function() {
+                showToast('提交失败，请稍后重试', 'error');
+            },
+            complete: function() {
+                $btn.prop('disabled', false).html(btnText);
+            }
+        });
+    });
+
+    // 输入时移除错误状态
+    $('#contact-form input, #contact-form textarea').on('input', function() {
+        $(this).removeClass('is-invalid');
+    });
+</script>
+{/block}

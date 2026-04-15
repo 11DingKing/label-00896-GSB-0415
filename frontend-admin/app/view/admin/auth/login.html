@@ -1,0 +1,498 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>登录 - 企业网站管理系统</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #1890ff;
+            --primary-dark: #096dd9;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            min-height: 100vh;
+            display: flex;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #f0f2f5;
+        }
+
+        /* 左侧装饰区域 */
+        .login-left {
+            flex: 1;
+            background: linear-gradient(135deg, #1890ff 0%, #096dd9 50%, #0050b3 100%);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 60px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .login-left::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M11 18c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm48 25c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm-43-7c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm63 31c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM34 90c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm56-76c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM12 86c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm28-65c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm23-11c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-6 60c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm29 22c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zM32 63c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm57-13c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-9-21c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM60 91c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM35 41c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2z' fill='%23ffffff' fill-opacity='0.1' fill-rule='evenodd'/%3E%3C/svg%3E");
+            opacity: 0.6;
+        }
+
+        .login-left .brand-content {
+            position: relative;
+            z-index: 1;
+            text-align: center;
+            color: #fff;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .login-left .brand-icon {
+            width: 120px;
+            height: 120px;
+            background: rgba(255,255,255,0.2);
+            border-radius: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 40px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.3);
+        }
+
+        .login-left .brand-icon i {
+            font-size: 60px;
+        }
+
+        .login-left h1 {
+            font-size: 36px;
+            font-weight: 700;
+            margin-bottom: 16px;
+            text-shadow: 0 2px 10px rgba(0,0,0,0.2);
+            text-align: center;
+        }
+
+        .login-left p {
+            font-size: 16px;
+            opacity: 0.9;
+            max-width: 400px;
+            line-height: 1.8;
+            text-align: center;
+            margin: 0 auto;
+        }
+
+        .login-left .features {
+            margin-top: 60px;
+            display: flex;
+            justify-content: center;
+            gap: 40px;
+        }
+
+        .login-left .feature-item {
+            text-align: center;
+        }
+
+        .login-left .feature-item .icon {
+            width: 50px;
+            height: 50px;
+            background: rgba(255,255,255,0.2);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 12px;
+            font-size: 20px;
+        }
+
+        .login-left .feature-item span {
+            font-size: 13px;
+            opacity: 0.9;
+        }
+
+        /* 右侧登录区域 */
+        .login-right {
+            width: 520px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            padding: 60px;
+            background: #fff;
+        }
+
+        .login-form-header {
+            margin-bottom: 40px;
+        }
+
+        .login-form-header h2 {
+            font-size: 28px;
+            font-weight: 700;
+            color: #1a1a2e;
+            margin-bottom: 8px;
+        }
+
+        .login-form-header p {
+            color: #8c8c8c;
+            font-size: 14px;
+        }
+
+        .form-group {
+            margin-bottom: 12px;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 14px;
+            font-weight: 500;
+            color: #1a1a2e;
+            margin-bottom: 8px;
+        }
+
+        .input-wrapper {
+            position: relative;
+        }
+
+        .input-wrapper .input-icon {
+            position: absolute;
+            left: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #bfbfbf;
+            font-size: 18px;
+            z-index: 1;
+        }
+
+        .input-wrapper .form-control {
+            height: 52px;
+            padding-left: 48px;
+            border: 2px solid #e8e8e8;
+            border-radius: 12px;
+            font-size: 15px;
+            transition: all 0.3s;
+        }
+
+        .input-wrapper .form-control:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 4px rgba(24,144,255,0.1);
+        }
+
+        .input-wrapper .form-control::placeholder {
+            color: #bfbfbf;
+        }
+
+        .input-wrapper .form-control.is-invalid {
+            border-color: #ff4d4f;
+        }
+
+        .input-wrapper .form-control.is-invalid:focus {
+            border-color: #ff4d4f;
+            box-shadow: 0 0 0 4px rgba(255, 77, 79, 0.1);
+        }
+
+        /* 表单验证错误提示 */
+        .form-group {
+            position: relative;
+            padding-bottom: 20px;
+        }
+
+        .invalid-feedback {
+            display: none;
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            font-size: 12px;
+            color: #ff4d4f;
+        }
+
+        .form-control.is-invalid ~ .invalid-feedback,
+        .input-wrapper .form-control.is-invalid ~ .invalid-feedback {
+            display: block;
+        }
+
+        .input-wrapper + .invalid-feedback {
+            display: none;
+        }
+
+        .input-wrapper:has(.form-control.is-invalid) + .invalid-feedback {
+            display: block;
+        }
+
+        /* 验证码区域 */
+        .captcha-row {
+            display: flex;
+            gap: 16px;
+            align-items: flex-end;
+        }
+
+        .captcha-row .form-group {
+            flex: 1;
+            margin-bottom: 0;
+        }
+
+        .captcha-box {
+            flex-shrink: 0;
+            padding-bottom: 20px;
+        }
+
+        .captcha-img {
+            height: 52px;
+            width: 130px;
+            border-radius: 12px;
+            cursor: pointer;
+            border: 2px solid #e8e8e8;
+            object-fit: cover;
+            transition: all 0.3s;
+            display: block;
+        }
+
+        .captcha-img:hover {
+            border-color: var(--primary-color);
+            transform: scale(1.02);
+        }
+
+        .captcha-tip {
+            font-size: 12px;
+            color: #8c8c8c;
+            text-align: center;
+            margin-top: 8px;
+            text-align: right;
+        }
+
+        .btn-login {
+            width: 100%;
+            height: 52px;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 600;
+            background: linear-gradient(135deg, #1890ff 0%, #096dd9 100%);
+            border: none;
+            margin-top: 32px;
+            transition: all 0.3s;
+        }
+
+        .btn-login:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(24, 144, 255, 0.4);
+            background: linear-gradient(135deg, #1890ff 0%, #096dd9 100%);
+        }
+
+        .login-footer {
+            text-align: center;
+            margin-top: 40px;
+            padding-top: 24px;
+            border-top: 1px solid #f0f0f0;
+            color: #8c8c8c;
+            font-size: 13px;
+        }
+
+        .alert {
+            border-radius: 12px;
+            margin-bottom: 24px;
+            border: none;
+            padding: 16px 20px;
+        }
+
+        .alert-success {
+            background: #f6ffed;
+            color: #52c41a;
+        }
+
+        .alert-danger {
+            background: #fff2f0;
+            color: #ff4d4f;
+        }
+
+        /* 响应式 */
+        @media (max-width: 992px) {
+            .login-left {
+                display: none;
+            }
+
+            .login-right {
+                width: 100%;
+                max-width: 480px;
+                margin: 0 auto;
+            }
+
+            body {
+                padding: 20px;
+                background: linear-gradient(135deg, #1890ff 0%, #096dd9 100%);
+            }
+
+            .login-right {
+                border-radius: 20px;
+                box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- 左侧装饰区域 -->
+    <div class="login-left">
+        <div class="brand-content">
+            <div class="brand-icon">
+                <i class="bi bi-buildings"></i>
+            </div>
+            <h1>企业网站管理系统</h1>
+            <p>功能强大、安全可靠的企业级内容管理系统，助力企业数字化转型</p>
+            <div class="features">
+                <div class="feature-item">
+                    <div class="icon"><i class="bi bi-shield-check"></i></div>
+                    <span>安全可靠</span>
+                </div>
+                <div class="feature-item">
+                    <div class="icon"><i class="bi bi-speedometer2"></i></div>
+                    <span>高效便捷</span>
+                </div>
+                <div class="feature-item">
+                    <div class="icon"><i class="bi bi-gear"></i></div>
+                    <span>灵活配置</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 右侧登录表单 -->
+    <div class="login-right">
+        <div class="login-form-header">
+            <h2>欢迎登录</h2>
+            <p>请输入您的账号信息</p>
+        </div>
+
+        <div id="alert-box"></div>
+
+        <form id="login-form" action="{:url('/admin/auth/login')}" method="post" novalidate>
+            <input type="hidden" name="captcha_key" id="captcha_key" value="{$captcha_key}">
+            <div class="form-group">
+                <label for="username">用户名</label>
+                <div class="input-wrapper">
+                    <i class="bi bi-person input-icon"></i>
+                    <input type="text" class="form-control" id="username" name="username" placeholder="请输入用户名" autocomplete="username">
+                </div>
+                <div class="invalid-feedback">请输入用户名</div>
+            </div>
+
+            <div class="form-group">
+                <label for="password">密码</label>
+                <div class="input-wrapper">
+                    <i class="bi bi-lock input-icon"></i>
+                    <input type="password" class="form-control" id="password" name="password" placeholder="请输入密码" autocomplete="current-password">
+                </div>
+                <div class="invalid-feedback">请输入密码</div>
+            </div>
+
+            <button type="submit" class="btn btn-primary btn-login">
+                <i class="bi bi-box-arrow-in-right me-2"></i>登 录
+            </button>
+        </form>
+
+        <div class="login-footer">
+            &copy; 2024 Enterprise CMS. All rights reserved.
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.7.1/dist/jquery.min.js"></script>
+    <script>
+        $(function() {
+            // 清除错误状态
+            function clearError($input) {
+                $input.removeClass('is-invalid');
+            }
+
+            // 设置错误状态
+            function setError($input, message) {
+                $input.addClass('is-invalid');
+                $input.closest('.form-group').find('.invalid-feedback').text(message);
+            }
+
+            // 输入时清除错误
+            $('#login-form input').on('input', function() {
+                clearError($(this));
+                $('#alert-box').empty();
+            });
+
+            // 表单验证
+            function validateForm() {
+                let isValid = true;
+                let firstError = null;
+
+                // 清除所有错误
+                $('#login-form .form-control').removeClass('is-invalid');
+
+                // 验证用户名
+                const $username = $('#username');
+                const username = $username.val().trim();
+                if (!username) {
+                    setError($username, '请输入用户名');
+                    isValid = false;
+                    if (!firstError) firstError = $username;
+                }
+
+                // 验证密码
+                const $password = $('#password');
+                const password = $password.val().trim();
+                if (!password) {
+                    setError($password, '请输入密码');
+                    isValid = false;
+                    if (!firstError) firstError = $password;
+                }
+
+                if (!isValid && firstError) {
+                    firstError.focus();
+                }
+
+                return isValid;
+            }
+
+            $('#login-form').on('submit', function(e) {
+                e.preventDefault();
+
+                // 客户端验证
+                if (!validateForm()) {
+                    return;
+                }
+
+                const $btn = $(this).find('button[type="submit"]');
+                const btnText = $btn.html();
+
+                $btn.prop('disabled', true).html('<span class="spinner-border spinner-border-sm me-2"></span>登录中...');
+
+                $.ajax({
+                    url: $(this).attr('action'),
+                    type: 'POST',
+                    data: $(this).serialize(),
+                    dataType: 'json',
+                    success: function(res) {
+                        if (res.code === 1) {
+                            $('#alert-box').html('<div class="alert alert-success"><i class="bi bi-check-circle me-2"></i>' + res.msg + '</div>');
+                            setTimeout(function() {
+                                window.location.href = res.data.url;
+                            }, 500);
+                        } else {
+                            $('#alert-box').html('<div class="alert alert-danger"><i class="bi bi-exclamation-circle me-2"></i>' + res.msg + '</div>');
+                            $btn.prop('disabled', false).html(btnText);
+                        }
+                    },
+                    error: function() {
+                        $('#alert-box').html('<div class="alert alert-danger"><i class="bi bi-exclamation-circle me-2"></i>请求失败，请重试</div>');
+                        $btn.prop('disabled', false).html(btnText);
+                    }
+                });
+
+            });
+        });
+    </script>
+</body>
+</html>

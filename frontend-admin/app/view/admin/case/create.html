@@ -1,0 +1,161 @@
+{extend name="admin/layout/base" /}
+
+{block name="title"}添加案例{/block}
+
+{block name="breadcrumb"}
+<li class="breadcrumb-item">内容管理</li>
+<li class="breadcrumb-item"><a href="{:url('/admin/case')}">案例管理</a></li>
+<li class="breadcrumb-item active">添加案例</li>
+{/block}
+
+{block name="css"}
+<link href="https://cdn.jsdelivr.net/npm/tinymce@6/skins/ui/oxide/skin.min.css" rel="stylesheet">
+{/block}
+
+{block name="content"}
+<div class="card">
+    <div class="card-header">添加案例</div>
+    <div class="card-body">
+        <form id="case-form" action="{:url('/admin/case/save')}" method="post" novalidate>
+            <div class="row">
+                <div class="col-lg-8">
+                    <div class="form-group-wrapper mb-3">
+                        <label class="form-label">案例标题 <span class="text-danger">*</span></label>
+                        <input type="text" class="form-control" name="title" id="title" maxlength="200">
+                        <div class="invalid-feedback">请输入案例标题</div>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">案例简介</label>
+                        <textarea class="form-control" name="description" rows="3" maxlength="500"></textarea>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">案例详情</label>
+                        <textarea class="form-control" name="content" id="editor" rows="15"></textarea>
+                    </div>
+                </div>
+                <div class="col-lg-4">
+                    <div class="mb-3">
+                        <label class="form-label">所属分类</label>
+                        <select class="form-select" name="category_id">
+                            <option value="">请选择分类</option>
+                            {volist name="categories" id="cat"}
+                            <option value="{$key}">{$cat}</option>
+                            {/volist}
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">封面图片</label>
+                        <div class="input-group">
+                            <input type="text" class="form-control" name="cover" id="cover-input" placeholder="图片地址">
+                            <button type="button" class="btn btn-outline-secondary" onclick="uploadImage()">上传</button>
+                        </div>
+                        <div id="cover-preview" class="mt-2"></div>
+                        <input type="file" id="cover-file" class="d-none" accept="image/*">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">客户名称</label>
+                        <input type="text" class="form-control" name="client" maxlength="100">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">排序</label>
+                        <input type="number" class="form-control" name="sort" value="0" min="0">
+                    </div>
+                    <div class="mb-3">
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" name="is_recommend" value="1" id="is_recommend">
+                            <label class="form-check-label" for="is_recommend">推荐案例</label>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">状态</label>
+                        <select class="form-select" name="status">
+                            <option value="1">显示</option>
+                            <option value="0">隐藏</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <div class="border-top pt-3 mt-3">
+                <button type="submit" class="btn btn-primary px-4">
+                    <i class="bi bi-check-lg me-1"></i>保存
+                </button>
+                <a href="{:url('/admin/case')}" class="btn btn-outline-secondary ms-2">取消</a>
+            </div>
+        </form>
+    </div>
+</div>
+{/block}
+
+{block name="js"}
+<script src="https://cdn.jsdelivr.net/npm/tinymce@6/tinymce.min.js"></script>
+<script>
+    tinymce.init({
+        selector: '#editor',
+        height: 400,
+        language: 'zh_CN',
+        plugins: 'lists link image table code fullscreen',
+        toolbar: 'undo redo | formatselect | bold italic | alignleft aligncenter alignright | bullist numlist | link image | code fullscreen',
+        menubar: false,
+        branding: false
+    });
+
+    function uploadImage() {
+        $('#cover-file').click();
+    }
+
+    $('#cover-file').on('change', function() {
+        const file = this.files[0];
+        if (!file) return;
+
+        const formData = new FormData();
+        formData.append('file', file);
+
+        $.ajax({
+            url: '{:url("/admin/upload/image")}',
+            type: 'POST',
+            data: formData,
+            processData: false,
+            contentType: false,
+            success: function(res) {
+                if (res.code === 1) {
+                    $('#cover-input').val(res.data.url);
+                    $('#cover-preview').html('<img src="' + res.data.url + '" class="img-thumbnail" style="max-width:200px;">');
+                    showToast('上传成功');
+                } else {
+                    showToast(res.msg, 'error');
+                }
+            }
+        });
+    });
+
+    $('#case-form').on('submit', function(e) {
+        e.preventDefault();
+        tinymce.triggerSave();
+
+        var isValid = true;
+        var firstError = null;
+        var $form = $(this);
+
+        clearAllErrors($form);
+
+        // 验证标题
+        var $title = $('#title');
+        if (!$title.val().trim()) {
+            setFieldError($title, '请输入案例标题');
+            isValid = false;
+            if (!firstError) firstError = $title;
+        }
+
+        if (!isValid) {
+            if (firstError) firstError.focus();
+            return;
+        }
+
+        submitForm(this, function() {
+            setTimeout(function() {
+                location.href = '{:url("/admin/case")}';
+            }, 1000);
+        });
+    });
+</script>
+{/block}

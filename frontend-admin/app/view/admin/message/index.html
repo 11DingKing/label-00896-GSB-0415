@@ -1,0 +1,248 @@
+{extend name="../admin/layout/base" /}
+
+{block name="title"}留言管理{/block}
+
+{block name="breadcrumb"}
+<li class="breadcrumb-item active">留言管理</li>
+{/block}
+
+{block name="content"}
+<!-- 筛选 -->
+<div class="filter-card">
+    <form class="row g-3 align-items-end" method="get">
+        <div class="col-auto">
+            <input type="text" class="form-control" name="keyword" value="{$keyword|default=''}" placeholder="姓名/邮箱/内容">
+        </div>
+        <div class="col-auto">
+            <select class="form-select" name="is_read">
+                <option value="">全部状态</option>
+                <option value="0" {if isset($is_read) && $is_read === '0'}selected{/if}>未读</option>
+                <option value="1" {if isset($is_read) && $is_read === '1'}selected{/if}>已读</option>
+            </select>
+        </div>
+        <div class="col-auto ms-auto">
+            <button type="submit" class="btn btn-primary"><i class="bi bi-search me-1"></i>搜索</button>
+        </div>
+    </form>
+</div>
+
+<!-- 数据表格 -->
+<div class="data-card">
+    <div class="table-responsive">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th width="60">ID</th>
+                    <th width="100">姓名</th>
+                    <th width="150">联系方式</th>
+                    <th>留言内容</th>
+                    <th width="80">状态</th>
+                    <th width="160">提交时间</th>
+                    <th width="120">操作</th>
+                </tr>
+            </thead>
+            <tbody>
+                {volist name="list" id="item"}
+                <tr>
+                    <td>{$item.id}</td>
+                    <td>{$item.name}</td>
+                    <td>
+                        {if $item.email}<div class="small">{$item.email}</div>{/if}
+                        {if $item.phone}<div class="small">{$item.phone}</div>{/if}
+                    </td>
+                    <td>{$item.content|mb_substr=0,40,'utf-8'}</td>
+                    <td>
+                        {if $item.is_read == 1}
+                        <span class="status-tag success">已读</span>
+                        {else}
+                        <span class="status-tag danger">未读</span>
+                        {/if}
+                    </td>
+                    <td>{$item.created_at|date='Y-m-d H:i'}</td>
+                    <td class="action-btns">
+                        <button class="btn btn-sm btn-outline-primary" onclick="viewMessage({$item.id})">查看</button>
+                        <button class="btn btn-sm btn-outline-danger" onclick="confirmDelete('/admin/message/delete/{$item.id}', $(this).closest('tr'))">删除</button>
+                    </td>
+                </tr>
+                {/volist}
+                {empty name="list"}
+                <tr><td colspan="7" class="text-center text-muted py-4">暂无数据</td></tr>
+                {/empty}
+            </tbody>
+        </table>
+    </div>
+    <div class="pagination-wrap d-flex justify-content-between align-items-center">
+        <div class="text-muted">共 {$list->total()|default=0} 条记录</div>
+        <div class="d-flex align-items-center">
+            <div class="d-flex align-items-center me-3">
+                <span class="text-muted me-2">每页</span>
+                <select class="form-select form-select-sm me-2" style="width:80px;" onchange="changePageSize(this.value)">
+                    <option value="10" {if request()->get('limit', 15) == 10}selected{/if}>10</option>
+                    <option value="15" {if request()->get('limit', 15) == 15}selected{/if}>15</option>
+                    <option value="20" {if request()->get('limit', 15) == 20}selected{/if}>20</option>
+                    <option value="50" {if request()->get('limit', 15) == 50}selected{/if}>50</option>
+                    <option value="100" {if request()->get('limit', 15) == 100}selected{/if}>100</option>
+                </select>
+                <span class="text-muted">条</span>
+            </div>
+            <nav>
+            <ul class="pagination pagination-sm mb-0">
+                {php}
+                $currentPage = $list->currentPage();
+                $lastPage = $list->lastPage() ?: 1;
+                $limit = request()->get('limit', 15);
+                {/php}
+                <li class="page-item {if $currentPage <= 1}disabled{/if}">
+                    <a class="page-link" href="{:url('/admin/message', array_merge(request()->get(), ['page' => $currentPage - 1]))}">上一页</a>
+                </li>
+                {if $lastPage <= 7}
+                {for start="1" end="$lastPage + 1"}
+                <li class="page-item {if $currentPage == $i}active{/if}">
+                    <a class="page-link" href="{:url('/admin/message', array_merge(request()->get(), ['page' => $i]))}">{$i}</a>
+                </li>
+                {/for}
+                {else}
+                {if $currentPage <= 4}
+                {for start="1" end="6"}
+                <li class="page-item {if $currentPage == $i}active{/if}">
+                    <a class="page-link" href="{:url('/admin/message', array_merge(request()->get(), ['page' => $i]))}">{$i}</a>
+                </li>
+                {/for}
+                <li class="page-item disabled"><span class="page-link">...</span></li>
+                <li class="page-item">
+                    <a class="page-link" href="{:url('/admin/message', array_merge(request()->get(), ['page' => $lastPage]))}">{$lastPage}</a>
+                </li>
+                {elseif $currentPage >= $lastPage - 3}
+                <li class="page-item">
+                    <a class="page-link" href="{:url('/admin/message', array_merge(request()->get(), ['page' => 1]))}">1</a>
+                </li>
+                <li class="page-item disabled"><span class="page-link">...</span></li>
+                {for start="$lastPage - 4" end="$lastPage + 1"}
+                <li class="page-item {if $currentPage == $i}active{/if}">
+                    <a class="page-link" href="{:url('/admin/message', array_merge(request()->get(), ['page' => $i]))}">{$i}</a>
+                </li>
+                {/for}
+                {else}
+                <li class="page-item">
+                    <a class="page-link" href="{:url('/admin/message', array_merge(request()->get(), ['page' => 1]))}">1</a>
+                </li>
+                <li class="page-item disabled"><span class="page-link">...</span></li>
+                {for start="$currentPage - 1" end="$currentPage + 2"}
+                <li class="page-item {if $currentPage == $i}active{/if}">
+                    <a class="page-link" href="{:url('/admin/message', array_merge(request()->get(), ['page' => $i]))}">{$i}</a>
+                </li>
+                {/for}
+                <li class="page-item disabled"><span class="page-link">...</span></li>
+                <li class="page-item">
+                    <a class="page-link" href="{:url('/admin/message', array_merge(request()->get(), ['page' => $lastPage]))}">{$lastPage}</a>
+                </li>
+                {/if}
+                {/if}
+                <li class="page-item {if $currentPage >= $lastPage}disabled{/if}">
+                    <a class="page-link" href="{:url('/admin/message', array_merge(request()->get(), ['page' => $currentPage + 1]))}">下一页</a>
+                </li>
+            </ul>
+            </nav>
+        </div>
+    </div>
+</div>
+
+<!-- 查看弹窗 -->
+<div class="modal fade" id="viewModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered" style="max-width:480px;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">留言详情</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <div class="row mb-3">
+                    <div class="col-4">
+                        <label class="form-label text-muted">姓名</label>
+                    </div>
+                    <div class="col-8">
+                        <div id="viewName" class="fw-medium"></div>
+                    </div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col-4">
+                        <label class="form-label text-muted">联系方式</label>
+                    </div>
+                    <div class="col-8">
+                        <div id="viewContact"></div>
+                    </div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col-4">
+                        <label class="form-label text-muted">公司</label>
+                    </div>
+                    <div class="col-8">
+                        <div id="viewCompany"></div>
+                    </div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col-4">
+                        <label class="form-label text-muted">主题</label>
+                    </div>
+                    <div class="col-8">
+                        <div id="viewSubject"></div>
+                    </div>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label text-muted">留言内容</label>
+                    <div id="viewContent" class="p-3 bg-light rounded" style="white-space:pre-wrap;min-height:80px;"></div>
+                </div>
+                <div class="row mb-0">
+                    <div class="col-4">
+                        <label class="form-label text-muted">提交时间</label>
+                    </div>
+                    <div class="col-8">
+                        <div id="viewTime" class="text-muted"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">关闭</button>
+            </div>
+        </div>
+    </div>
+</div>
+{/block}
+
+{block name="js"}
+<script>
+var viewModalEl = document.getElementById('viewModal');
+var viewModal = new bootstrap.Modal(viewModalEl);
+var currentViewId = null;
+
+viewModalEl.addEventListener('hidden.bs.modal', function () {
+    document.body.classList.remove('modal-open');
+    var backdrop = document.querySelector('.modal-backdrop');
+    if (backdrop) backdrop.remove();
+    // 关闭弹窗后更新当前行的状态为已读
+    if (currentViewId) {
+        var $row = $('button[onclick*="viewMessage(' + currentViewId + ')"]').closest('tr');
+        $row.find('.status-tag.danger').removeClass('danger').addClass('success').text('已读');
+        currentViewId = null;
+    }
+});
+
+function viewMessage(id) {
+    currentViewId = id;
+    $.get('/admin/message/view', {id: id}, function(res) {
+        if (res.code === 1) {
+            var d = res.data;
+            $('#viewName').text(d.name || '-');
+            $('#viewContact').html((d.email ? d.email + '<br>' : '') + (d.phone || ''));
+            $('#viewCompany').text(d.company || '-');
+            $('#viewSubject').text(d.subject || '-');
+            $('#viewContent').text(d.content || '-');
+            $('#viewTime').text(d.created_at || '-');
+            viewModal.show();
+        } else {
+            showToast(res.msg, 'error');
+        }
+    }, 'json');
+}
+</script>
+{/block}

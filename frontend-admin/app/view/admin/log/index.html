@@ -1,0 +1,156 @@
+{extend name="../admin/layout/base" /}
+
+{block name="title"}操作日志{/block}
+
+{block name="breadcrumb"}
+<li class="breadcrumb-item active">操作日志</li>
+{/block}
+
+{block name="content"}
+<!-- 筛选 -->
+<div class="filter-card">
+    <form class="row g-3 align-items-end" method="get">
+        <div class="col-auto">
+            <input type="text" class="form-control" name="keyword" value="{$keyword|default=''}" placeholder="用户名/描述/IP">
+        </div>
+        <div class="col-auto">
+            <select class="form-select" name="module">
+                <option value="">全部模块</option>
+                {volist name="modules" id="mod"}
+                <option value="{$mod}" {if isset($module) && $module == $mod}selected{/if}>{$mod}</option>
+                {/volist}
+            </select>
+        </div>
+        <div class="col-auto ms-auto">
+            <button type="submit" class="btn btn-primary"><i class="bi bi-search me-1"></i>搜索</button>
+            <button type="button" class="btn btn-outline-danger" onclick="confirmClear()"><i class="bi bi-trash me-1"></i>清空</button>
+        </div>
+    </form>
+</div>
+
+<!-- 数据表格 -->
+<div class="data-card">
+    <div class="table-responsive">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th width="60">ID</th>
+                    <th width="100">用户</th>
+                    <th width="100">模块</th>
+                    <th width="80">操作</th>
+                    <th>描述</th>
+                    <th width="120">IP地址</th>
+                    <th width="150">操作时间</th>
+                </tr>
+            </thead>
+            <tbody>
+                {volist name="list" id="item"}
+                <tr>
+                    <td>{$item.id}</td>
+                    <td>{$item.username}</td>
+                    <td><span class="badge bg-primary">{$item.module}</span></td>
+                    <td>{$item.action}</td>
+                    <td>{$item.description|mb_substr=0,40,'utf-8'}</td>
+                    <td>{$item.ip}</td>
+                    <td>{$item.created_at|date='Y-m-d H:i'}</td>
+                </tr>
+                {/volist}
+                {empty name="list"}
+                <tr><td colspan="7" class="text-center text-muted py-4">暂无日志</td></tr>
+                {/empty}
+            </tbody>
+        </table>
+    </div>
+    <div class="pagination-wrap d-flex justify-content-between align-items-center">
+        <div class="text-muted">共 {$list->total()|default=0} 条记录</div>
+        <div class="d-flex align-items-center">
+            <div class="d-flex align-items-center me-3">
+                <span class="text-muted me-2">每页</span>
+                <select class="form-select form-select-sm me-2" style="width:80px;" onchange="changePageSize(this.value)">
+                    <option value="10" {if request()->get('limit', 15) == 10}selected{/if}>10</option>
+                    <option value="15" {if request()->get('limit', 15) == 15}selected{/if}>15</option>
+                    <option value="20" {if request()->get('limit', 15) == 20}selected{/if}>20</option>
+                    <option value="50" {if request()->get('limit', 15) == 50}selected{/if}>50</option>
+                    <option value="100" {if request()->get('limit', 15) == 100}selected{/if}>100</option>
+                </select>
+                <span class="text-muted">条</span>
+            </div>
+            <nav>
+            <ul class="pagination pagination-sm mb-0">
+                {php}
+                $currentPage = $list->currentPage();
+                $lastPage = $list->lastPage() ?: 1;
+                $limit = request()->get('limit', 15);
+                {/php}
+                <li class="page-item {if $currentPage <= 1}disabled{/if}">
+                    <a class="page-link" href="{:url('/admin/log', array_merge(request()->get(), ['page' => $currentPage - 1]))}">上一页</a>
+                </li>
+                {if $lastPage <= 7}
+                {for start="1" end="$lastPage + 1"}
+                <li class="page-item {if $currentPage == $i}active{/if}">
+                    <a class="page-link" href="{:url('/admin/log', array_merge(request()->get(), ['page' => $i]))}">{$i}</a>
+                </li>
+                {/for}
+                {else}
+                {if $currentPage <= 4}
+                {for start="1" end="6"}
+                <li class="page-item {if $currentPage == $i}active{/if}">
+                    <a class="page-link" href="{:url('/admin/log', array_merge(request()->get(), ['page' => $i]))}">{$i}</a>
+                </li>
+                {/for}
+                <li class="page-item disabled"><span class="page-link">...</span></li>
+                <li class="page-item">
+                    <a class="page-link" href="{:url('/admin/log', array_merge(request()->get(), ['page' => $lastPage]))}">{$lastPage}</a>
+                </li>
+                {elseif $currentPage >= $lastPage - 3}
+                <li class="page-item">
+                    <a class="page-link" href="{:url('/admin/log', array_merge(request()->get(), ['page' => 1]))}">1</a>
+                </li>
+                <li class="page-item disabled"><span class="page-link">...</span></li>
+                {for start="$lastPage - 4" end="$lastPage + 1"}
+                <li class="page-item {if $currentPage == $i}active{/if}">
+                    <a class="page-link" href="{:url('/admin/log', array_merge(request()->get(), ['page' => $i]))}">{$i}</a>
+                </li>
+                {/for}
+                {else}
+                <li class="page-item">
+                    <a class="page-link" href="{:url('/admin/log', array_merge(request()->get(), ['page' => 1]))}">1</a>
+                </li>
+                <li class="page-item disabled"><span class="page-link">...</span></li>
+                {for start="$currentPage - 1" end="$currentPage + 2"}
+                <li class="page-item {if $currentPage == $i}active{/if}">
+                    <a class="page-link" href="{:url('/admin/log', array_merge(request()->get(), ['page' => $i]))}">{$i}</a>
+                </li>
+                {/for}
+                <li class="page-item disabled"><span class="page-link">...</span></li>
+                <li class="page-item">
+                    <a class="page-link" href="{:url('/admin/log', array_merge(request()->get(), ['page' => $lastPage]))}">{$lastPage}</a>
+                </li>
+                {/if}
+                {/if}
+                <li class="page-item {if $currentPage >= $lastPage}disabled{/if}">
+                    <a class="page-link" href="{:url('/admin/log', array_merge(request()->get(), ['page' => $currentPage + 1]))}">下一页</a>
+                </li>
+            </ul>
+            </nav>
+        </div>
+    </div>
+</div>
+{/block}
+
+{block name="js"}
+<script>
+function confirmClear() {
+    showConfirm('确认清空', '确定要清空所有日志吗？此操作不可恢复！', function() {
+        $.post('/admin/log/clear', {}, function(res) {
+            if (res.code === 1) {
+                showToast(res.msg);
+                setTimeout(function() { location.reload(); }, 500);
+            } else {
+                showToast(res.msg, 'error');
+            }
+        }, 'json');
+    });
+}
+</script>
+{/block}

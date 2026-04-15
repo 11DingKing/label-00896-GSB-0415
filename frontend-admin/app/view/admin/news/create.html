@@ -1,0 +1,217 @@
+{extend name="admin/layout/base" /}
+
+{block name="title"}发布新闻{/block}
+
+{block name="breadcrumb"}
+<li class="breadcrumb-item">内容管理</li>
+<li class="breadcrumb-item"><a href="{:url('/admin/news')}">新闻管理</a></li>
+<li class="breadcrumb-item active">发布新闻</li>
+{/block}
+
+{block name="css"}
+<link href="https://cdn.jsdelivr.net/npm/tinymce@6/skins/ui/oxide/skin.min.css" rel="stylesheet">
+{/block}
+
+{block name="content"}
+<div class="card">
+    <div class="card-header">发布新闻</div>
+    <div class="card-body">
+        <form id="news-form" action="{:url('/admin/news/save')}" method="post" novalidate>
+            <div class="row">
+                <div class="col-lg-8">
+                    <div class="form-group-wrapper mb-3">
+                        <label class="form-label">新闻标题 <span class="text-danger">*</span></label>
+                        <input type="text" class="form-control" name="title" id="title" maxlength="200">
+                        <div class="invalid-feedback">请输入新闻标题</div>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">新闻摘要</label>
+                        <textarea class="form-control" name="summary" rows="3" maxlength="500" placeholder="留空则自动截取内容"></textarea>
+                    </div>
+                    <div class="form-group-wrapper mb-3">
+                        <label class="form-label">新闻内容 <span class="text-danger">*</span></label>
+                        <textarea class="form-control" name="content" id="editor" rows="15"></textarea>
+                        <div class="invalid-feedback">请输入新闻内容</div>
+                    </div>
+                </div>
+                <div class="col-lg-4">
+                    <div class="form-group-wrapper mb-3">
+                        <label class="form-label">所属分类 <span class="text-danger">*</span></label>
+                        <select class="form-select" name="category_id" id="category_id">
+                            <option value="">请选择分类</option>
+                            {volist name="categories" id="cat"}
+                            <option value="{$key}">{$cat}</option>
+                            {/volist}
+                        </select>
+                        <div class="invalid-feedback">请选择分类</div>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">封面图片</label>
+                        <div class="input-group">
+                            <input type="text" class="form-control" name="cover" id="cover-input" placeholder="图片地址">
+                            <button type="button" class="btn btn-outline-secondary" onclick="uploadImage()">上传</button>
+                        </div>
+                        <div id="cover-preview" class="mt-2"></div>
+                        <input type="file" id="cover-file" class="d-none" accept="image/*">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">作者</label>
+                        <input type="text" class="form-control" name="author" maxlength="50">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">来源</label>
+                        <input type="text" class="form-control" name="source" maxlength="100">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">发布时间</label>
+                        <input type="datetime-local" class="form-control" name="published_at" value="{:date('Y-m-d\TH:i')}">
+                    </div>
+                    <div class="mb-3">
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="checkbox" name="is_top" value="1" id="is_top">
+                            <label class="form-check-label" for="is_top">置顶</label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="checkbox" name="is_recommend" value="1" id="is_recommend">
+                            <label class="form-check-label" for="is_recommend">推荐</label>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">状态</label>
+                        <select class="form-select" name="status">
+                            <option value="1">发布</option>
+                            <option value="0">草稿</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <div class="border-top pt-3 mt-3">
+                <button type="submit" class="btn btn-primary px-4">
+                    <i class="bi bi-check-lg me-1"></i>保存
+                </button>
+                <a href="{:url('/admin/news')}" class="btn btn-outline-secondary ms-2">取消</a>
+            </div>
+        </form>
+    </div>
+</div>
+{/block}
+
+{block name="js"}
+<script src="https://cdn.jsdelivr.net/npm/tinymce@6/tinymce.min.js"></script>
+<script>
+    // 初始化编辑器
+    tinymce.init({
+        selector: '#editor',
+        height: 500,
+        language: 'zh_CN',
+        plugins: 'lists link image table code fullscreen',
+        toolbar: 'undo redo | formatselect | bold italic | alignleft aligncenter alignright | bullist numlist | link image | code fullscreen',
+        menubar: false,
+        branding: false,
+        content_style: 'body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; font-size: 14px; }',
+        images_upload_handler: function(blobInfo, progress) {
+            return new Promise((resolve, reject) => {
+                const formData = new FormData();
+                formData.append('file', blobInfo.blob(), blobInfo.filename());
+
+                $.ajax({
+                    url: '{:url("/admin/upload/image")}',
+                    type: 'POST',
+                    data: formData,
+                    processData: false,
+                    contentType: false,
+                    success: function(res) {
+                        if (res.code === 1) {
+                            resolve(res.data.url);
+                        } else {
+                            reject(res.msg);
+                        }
+                    },
+                    error: function() {
+                        reject('上传失败');
+                    }
+                });
+            });
+        }
+    });
+
+    // 上传封面
+    function uploadImage() {
+        $('#cover-file').click();
+    }
+
+    $('#cover-file').on('change', function() {
+        const file = this.files[0];
+        if (!file) return;
+
+        const formData = new FormData();
+        formData.append('file', file);
+
+        $.ajax({
+            url: '{:url("/admin/upload/image")}',
+            type: 'POST',
+            data: formData,
+            processData: false,
+            contentType: false,
+            success: function(res) {
+                if (res.code === 1) {
+                    $('#cover-input').val(res.data.url);
+                    $('#cover-preview').html('<img src="' + res.data.url + '" class="img-thumbnail" style="max-width:200px;">');
+                    showToast('上传成功');
+                } else {
+                    showToast(res.msg, 'error');
+                }
+            },
+            error: function() {
+                showToast('上传失败', 'error');
+            }
+        });
+    });
+
+    // 表单提交
+    $('#news-form').on('submit', function(e) {
+        e.preventDefault();
+        tinymce.triggerSave();
+
+        var isValid = true;
+        var firstError = null;
+        var $form = $(this);
+
+        clearAllErrors($form);
+
+        // 验证标题
+        var $title = $('#title');
+        if (!$title.val().trim()) {
+            setFieldError($title, '请输入新闻标题');
+            isValid = false;
+            if (!firstError) firstError = $title;
+        }
+
+        // 验证内容
+        var content = tinymce.get('editor').getContent();
+        if (!content.trim()) {
+            setFieldError($('#editor'), '请输入新闻内容');
+            isValid = false;
+        }
+
+        // 验证分类
+        var $category = $('#category_id');
+        if (!$category.val()) {
+            setFieldError($category, '请选择分类');
+            isValid = false;
+            if (!firstError) firstError = $category;
+        }
+
+        if (!isValid) {
+            if (firstError) firstError.focus();
+            return;
+        }
+
+        submitForm(this, function() {
+            setTimeout(function() {
+                location.href = '{:url("/admin/news")}';
+            }, 1000);
+        });
+    });
+</script>
+{/block}

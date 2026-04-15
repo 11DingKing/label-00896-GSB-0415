@@ -1,0 +1,70 @@
+{extend name="admin/layout/base" /}
+
+{block name="title"}编辑角色{/block}
+
+{block name="breadcrumb"}
+<li class="breadcrumb-item">用户管理</li>
+<li class="breadcrumb-item"><a href="{:url('/admin/role')}">角色管理</a></li>
+<li class="breadcrumb-item active">编辑角色</li>
+{/block}
+
+{block name="content"}
+<div class="card">
+    <div class="card-header">编辑角色</div>
+    <div class="card-body">
+        <form id="role-form" action="{:url('/admin/role/update', ['id' => $role.id])}" method="post" style="max-width: 600px;" novalidate>
+            <div class="form-group-wrapper mb-3">
+                <label class="form-label">角色名称 <span class="text-danger">*</span></label>
+                <input type="text" class="form-control" name="name" id="name" value="{$role.name}" maxlength="50">
+                <div class="invalid-feedback">请输入角色名称</div>
+            </div>
+            <div class="mb-3">
+                <label class="form-label">描述</label>
+                <textarea class="form-control" name="description" rows="3" maxlength="255">{$role.description}</textarea>
+            </div>
+            <div class="mb-3">
+                <label class="form-label">状态</label>
+                <select class="form-select" name="status">
+                    <option value="1" {if $role.status == 1}selected{/if}>正常</option>
+                    <option value="0" {if $role.status == 0}selected{/if}>禁用</option>
+                </select>
+            </div>
+            <div class="border-top pt-3 mt-3">
+                <button type="submit" class="btn btn-primary px-4">
+                    <i class="bi bi-check-lg me-1"></i>保存
+                </button>
+                <a href="{:url('/admin/role')}" class="btn btn-outline-secondary ms-2">取消</a>
+            </div>
+        </form>
+    </div>
+</div>
+{/block}
+
+{block name="js"}
+<script>
+    $('#role-form').on('submit', function(e) {
+        e.preventDefault();
+
+        var isValid = true;
+        var $form = $(this);
+
+        clearAllErrors($form);
+
+        // 验证名称
+        var $name = $('#name');
+        if (!$name.val().trim()) {
+            setFieldError($name, '请输入角色名称');
+            isValid = false;
+            $name.focus();
+        }
+
+        if (!isValid) return;
+
+        submitForm(this, function() {
+            setTimeout(function() {
+                location.href = '{:url("/admin/role")}';
+            }, 1000);
+        });
+    });
+</script>
+{/block}

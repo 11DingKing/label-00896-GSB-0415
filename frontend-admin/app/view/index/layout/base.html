@@ -1,0 +1,897 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="keywords" content="{$site_keywords}">
+    <meta name="description" content="{$site_description}">
+    <title>{block name="title"}{$site_name}{/block}</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #1890ff;
+            --primary-dark: #096dd9;
+            --text-color: #262626;
+            --text-secondary: #595959;
+            --border-color: #e8e8e8;
+            --bg-light: #f5f7fa;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            color: var(--text-color);
+            line-height: 1.6;
+        }
+
+        a {
+            color: var(--primary-color);
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+
+        a:hover {
+            color: var(--primary-dark);
+        }
+
+        /* 导航栏 */
+        .navbar {
+            background: #fff;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+            padding: 0;
+        }
+
+        .navbar-brand {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--primary-color) !important;
+            padding: 16px 0;
+        }
+
+        .navbar-nav .nav-link {
+            color: var(--text-color);
+            font-weight: 500;
+            padding: 20px 24px !important;
+            position: relative;
+        }
+
+        .navbar-nav .nav-link:hover,
+        .navbar-nav .nav-link.active {
+            color: var(--primary-color);
+        }
+
+        .navbar-nav .nav-link.active::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 24px;
+            right: 24px;
+            height: 3px;
+            background: var(--primary-color);
+            border-radius: 3px 3px 0 0;
+        }
+
+        /* Banner */
+        .banner-section {
+            background: linear-gradient(135deg, #1890ff 0%, #096dd9 100%);
+            color: #fff;
+            padding: 80px 0;
+        }
+
+        .banner-section h1 {
+            font-size: 48px;
+            font-weight: 700;
+            margin-bottom: 20px;
+        }
+
+        .banner-section p {
+            font-size: 18px;
+            opacity: 0.9;
+            margin-bottom: 30px;
+        }
+
+        /* 页面标题 - 增强版 */
+        .page-header {
+            background: linear-gradient(135deg, #1890ff 0%, #096dd9 50%, #0050b3 100%);
+            color: #fff;
+            padding: 60px 0;
+            min-height: 320px;
+            display: flex;
+            align-items: center;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .page-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.05'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+            opacity: 0.5;
+        }
+        
+        .page-header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.5), transparent);
+        }
+        
+        .page-header .container {
+            position: relative;
+            z-index: 1;
+            width: 100%;
+        }
+        
+        .page-header .page-icon {
+            width: 80px;
+            height: 80px;
+            background: rgba(255,255,255,0.15);
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 24px;
+            font-size: 36px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.2);
+        }
+
+        .page-header h1 {
+            font-size: 42px;
+            font-weight: 700;
+            margin-bottom: 16px;
+            text-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        .page-header .page-subtitle {
+            font-size: 16px;
+            opacity: 0.9;
+            max-width: 600px;
+            margin: 0 auto 20px;
+            line-height: 1.8;
+        }
+
+        .page-header .breadcrumb {
+            justify-content: center;
+            margin-bottom: 0;
+            background: rgba(255,255,255,0.1);
+            display: inline-flex;
+            padding: 10px 24px;
+            border-radius: 30px;
+            backdrop-filter: blur(10px);
+        }
+
+        .page-header .breadcrumb-item,
+        .page-header .breadcrumb-item a {
+            color: rgba(255,255,255,0.9);
+            font-size: 14px;
+        }
+        
+        .page-header .breadcrumb-item a:hover {
+            color: #fff;
+        }
+
+        .page-header .breadcrumb-item.active {
+            color: #fff;
+            font-weight: 500;
+        }
+        
+        .page-header .breadcrumb-item + .breadcrumb-item::before {
+            color: rgba(255,255,255,0.6);
+        }
+        
+        /* 页面头部装饰元素 */
+        .page-header .header-decoration {
+            position: absolute;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.1);
+        }
+        
+        .page-header .header-decoration.d1 {
+            width: 300px;
+            height: 300px;
+            top: -150px;
+            right: -50px;
+        }
+        
+        .page-header .header-decoration.d2 {
+            width: 200px;
+            height: 200px;
+            bottom: -100px;
+            left: -50px;
+        }
+        
+        .page-header .header-decoration.d3 {
+            width: 100px;
+            height: 100px;
+            top: 50%;
+            left: 10%;
+            transform: translateY(-50%);
+        }
+        
+        /* 页面头部统计数据 */
+        .page-header .header-stats {
+            display: flex;
+            justify-content: center;
+            gap: 40px;
+            margin: 30px 0;
+            flex-wrap: wrap;
+        }
+        
+        .page-header .header-stat-item {
+            text-align: center;
+            background: rgba(255,255,255,0.1);
+            padding: 16px 28px;
+            border-radius: 12px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.15);
+        }
+        
+        .page-header .header-stat-item .stat-num {
+            display: block;
+            font-size: 32px;
+            font-weight: 700;
+            color: #fff;
+            line-height: 1.2;
+        }
+        
+        .page-header .header-stat-item .stat-text {
+            font-size: 13px;
+            color: rgba(255,255,255,0.85);
+            margin-top: 4px;
+            display: block;
+        }
+
+        /* 区块标题 */
+        .section-title {
+            text-align: center;
+            margin-bottom: 48px;
+        }
+
+        .section-title h2 {
+            font-size: 32px;
+            font-weight: 600;
+            margin-bottom: 12px;
+        }
+
+        .section-title p {
+            color: var(--text-secondary);
+            font-size: 16px;
+        }
+
+        /* 卡片 */
+        .card {
+            border: none;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+            transition: all 0.3s;
+            overflow: hidden;
+        }
+
+        .card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 24px rgba(0,0,0,0.12);
+        }
+
+        .card-img-top {
+            height: 200px;
+            object-fit: cover;
+        }
+
+        .card-body {
+            padding: 24px;
+        }
+
+        .card-title {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 12px;
+        }
+
+        .card-text {
+            color: var(--text-secondary);
+            font-size: 14px;
+        }
+
+        /* 新闻列表 */
+        .news-item {
+            display: flex;
+            gap: 24px;
+            padding: 24px 0;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .news-item:last-child {
+            border-bottom: none;
+        }
+
+        .news-item .news-img {
+            width: 240px;
+            height: 160px;
+            object-fit: cover;
+            border-radius: 8px;
+            flex-shrink: 0;
+        }
+
+        .news-item .news-content h3 {
+            font-size: 20px;
+            font-weight: 600;
+            margin-bottom: 12px;
+        }
+
+        .news-item .news-content h3 a {
+            color: var(--text-color);
+        }
+
+        .news-item .news-content h3 a:hover {
+            color: var(--primary-color);
+        }
+
+        .news-item .news-meta {
+            color: var(--text-secondary);
+            font-size: 13px;
+            margin-bottom: 12px;
+        }
+
+        .news-item .news-summary {
+            color: var(--text-secondary);
+            font-size: 14px;
+            line-height: 1.8;
+        }
+
+        /* 侧边栏 */
+        .sidebar .widget {
+            background: #fff;
+            border-radius: 12px;
+            padding: 24px;
+            margin-bottom: 24px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+        }
+
+        .sidebar .widget-title {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 16px;
+            padding-bottom: 12px;
+            border-bottom: 2px solid var(--primary-color);
+        }
+
+        .sidebar .category-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .sidebar .category-list li {
+            padding: 10px 0;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .sidebar .category-list li:last-child {
+            border-bottom: none;
+        }
+
+        .sidebar .category-list a {
+            color: var(--text-color);
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .sidebar .category-list a:hover {
+            color: var(--primary-color);
+        }
+
+        /* 分页 */
+        .pagination {
+            justify-content: center;
+            margin-top: 40px;
+        }
+
+        .page-link {
+            color: var(--text-color);
+            border-radius: 8px;
+            margin: 0 4px;
+            padding: 10px 16px;
+        }
+
+        .page-item.active .page-link {
+            background: var(--primary-color);
+            border-color: var(--primary-color);
+        }
+
+        /* 按钮 */
+        .btn-primary {
+            background: var(--primary-color);
+            border-color: var(--primary-color);
+            padding: 12px 32px;
+            border-radius: 8px;
+            font-weight: 500;
+        }
+
+        .btn-primary:hover {
+            background: var(--primary-dark);
+            border-color: var(--primary-dark);
+        }
+
+        .btn-outline-primary {
+            color: var(--primary-color);
+            border-color: var(--primary-color);
+            padding: 12px 32px;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .btn-outline-primary:hover {
+            background: var(--primary-color);
+            border-color: var(--primary-color);
+            transform: translateY(-2px);
+        }
+
+        /* 通用按钮过渡效果 */
+        .btn {
+            transition: all 0.3s ease;
+        }
+
+        .btn:active {
+            transform: scale(0.98);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(24, 144, 255, 0.4);
+        }
+
+        /* 表单控件交互 */
+        .form-control, .form-select {
+            transition: all 0.3s ease;
+            border: 2px solid var(--border-color);
+        }
+
+        .form-control:focus, .form-select:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 4px rgba(24, 144, 255, 0.1);
+        }
+
+        /* 图片缩放效果 */
+        .card-img-top, .news-img {
+            transition: transform 0.3s ease;
+        }
+
+        .card:hover .card-img-top,
+        .news-item:hover .news-img {
+            transform: scale(1.05);
+        }
+
+        .card {
+            overflow: hidden;
+        }
+
+        /* 导航链接过渡 */
+        .navbar-nav .nav-link {
+            transition: color 0.3s ease;
+        }
+
+        /* 页脚链接过渡 */
+        .footer ul li a {
+            transition: color 0.3s ease, padding-left 0.3s ease;
+        }
+
+        .footer ul li a:hover {
+            padding-left: 8px;
+        }
+
+        /* 侧边栏分类列表交互 */
+        .sidebar .category-list a {
+            transition: all 0.3s ease;
+            padding: 4px 0;
+        }
+
+        .sidebar .category-list a:hover {
+            padding-left: 8px;
+        }
+
+        /* 加载动画 */
+        .spinner-border-sm {
+            width: 1rem;
+            height: 1rem;
+        }
+
+        /* 页脚 */
+        .footer {
+            background: #1a1a2e;
+            color: rgba(255,255,255,0.7);
+            padding: 60px 0 30px;
+        }
+
+        .footer h5 {
+            color: #fff;
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 24px;
+        }
+
+        .footer ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .footer ul li {
+            margin-bottom: 12px;
+        }
+
+        .footer ul li a {
+            color: rgba(255,255,255,0.7);
+        }
+
+        .footer ul li a:hover {
+            color: #fff;
+        }
+
+        .footer-bottom {
+            border-top: 1px solid rgba(255,255,255,0.1);
+            padding-top: 24px;
+            margin-top: 40px;
+            text-align: center;
+            font-size: 14px;
+        }
+
+        /* 响应式 */
+        @media (max-width: 768px) {
+            .banner-section h1 {
+                font-size: 32px;
+            }
+
+            .news-item {
+                flex-direction: column;
+            }
+
+            .news-item .news-img {
+                width: 100%;
+                height: 200px;
+            }
+
+            .page-header h1 {
+                font-size: 28px;
+            }
+        }
+
+        /* Toast 消息提示样式 */
+        .toast-container {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 9999;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .custom-toast {
+            min-width: 300px;
+            max-width: 400px;
+            padding: 16px 20px;
+            border-radius: 12px;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.15);
+            display: flex;
+            align-items: center;
+            animation: slideInRight 0.3s ease, fadeOut 0.3s ease 2.7s;
+            background: #fff;
+        }
+
+        .custom-toast.toast-success {
+            border-left: 4px solid #52c41a;
+        }
+
+        .custom-toast.toast-error {
+            border-left: 4px solid #ff4d4f;
+        }
+
+        .custom-toast.toast-warning {
+            border-left: 4px solid #faad14;
+        }
+
+        .custom-toast.toast-info {
+            border-left: 4px solid #1890ff;
+        }
+
+        .custom-toast .toast-icon {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 12px;
+            flex-shrink: 0;
+        }
+
+        .custom-toast.toast-success .toast-icon {
+            background: #f6ffed;
+            color: #52c41a;
+        }
+
+        .custom-toast.toast-error .toast-icon {
+            background: #fff2f0;
+            color: #ff4d4f;
+        }
+
+        .custom-toast.toast-warning .toast-icon {
+            background: #fffbe6;
+            color: #faad14;
+        }
+
+        .custom-toast.toast-info .toast-icon {
+            background: #e6f7ff;
+            color: #1890ff;
+        }
+
+        .custom-toast .toast-message {
+            flex: 1;
+            font-size: 14px;
+            color: var(--text-color);
+            line-height: 1.5;
+        }
+
+        .custom-toast .toast-close {
+            background: none;
+            border: none;
+            color: #999;
+            cursor: pointer;
+            padding: 0;
+            margin-left: 12px;
+            font-size: 18px;
+            line-height: 1;
+        }
+
+        .custom-toast .toast-close:hover {
+            color: #666;
+        }
+
+        @keyframes slideInRight {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        @keyframes fadeOut {
+            from {
+                opacity: 1;
+            }
+            to {
+                opacity: 0;
+            }
+        }
+
+        /* 表单验证错误样式 */
+        .form-group-wrapper {
+            position: relative;
+            padding-bottom: 20px;
+        }
+        
+        .form-control.is-invalid {
+            border-color: #ff4d4f;
+            background-image: none;
+        }
+
+        .form-control.is-invalid:focus {
+            border-color: #ff4d4f;
+            box-shadow: 0 0 0 4px rgba(255, 77, 79, 0.1);
+        }
+
+        .invalid-feedback {
+            display: none;
+            color: #ff4d4f;
+            font-size: 12px;
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+        }
+
+        .form-control.is-invalid + .invalid-feedback,
+        .form-control.is-invalid ~ .invalid-feedback {
+            display: block;
+        }
+    </style>
+    {block name="css"}{/block}
+</head>
+<body>
+    <!-- 导航栏 -->
+    <nav class="navbar navbar-expand-lg sticky-top">
+        <div class="container">
+            <a class="navbar-brand" href="{:url('/')}">
+                <i class="bi bi-grid-3x3-gap-fill me-2"></i>{:get_config('basic.site_name', '企业网站')}
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link {if $current_page == 'home'}active{/if}" href="{:url('/')}">首页</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link {if $current_page == 'news'}active{/if}" href="{:url('/news')}">新闻中心</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link {if $current_page == 'product'}active{/if}" href="{:url('/product')}">产品展示</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link {if $current_page == 'case'}active{/if}" href="{:url('/case')}">案例展示</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link {if $current_page == 'about'}active{/if}" href="{:url('/about')}">关于我们</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link {if $current_page == 'contact'}active{/if}" href="{:url('/contact')}">联系我们</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    {block name="content"}{/block}
+
+    <!-- 页脚 -->
+    <footer class="footer">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-4 mb-4 mb-lg-0">
+                    <h5>{:get_config('contact.company_name', '企业名称')}</h5>
+                    <p>{:get_config('basic.site_description', '专业的企业服务提供商')}</p>
+                </div>
+                <div class="col-lg-2 col-md-4 mb-4 mb-md-0">
+                    <h5>快速链接</h5>
+                    <ul>
+                        <li><a href="{:url('/')}">首页</a></li>
+                        <li><a href="{:url('/news')}">新闻中心</a></li>
+                        <li><a href="{:url('/product')}">产品展示</a></li>
+                        <li><a href="{:url('/case')}">案例展示</a></li>
+                    </ul>
+                </div>
+                <div class="col-lg-2 col-md-4 mb-4 mb-md-0">
+                    <h5>关于我们</h5>
+                    <ul>
+                        <li><a href="{:url('/about')}">公司简介</a></li>
+                        <li><a href="{:url('/contact')}">联系我们</a></li>
+                    </ul>
+                </div>
+                <div class="col-lg-4 col-md-4">
+                    <h5>联系方式</h5>
+                    <ul>
+                        <li><i class="bi bi-geo-alt me-2"></i>{:get_config('contact.company_address', '公司地址')}</li>
+                        <li><i class="bi bi-telephone me-2"></i>{:get_config('contact.company_phone', '联系电话')}</li>
+                        <li><i class="bi bi-envelope me-2"></i>{:get_config('contact.company_email', '联系邮箱')}</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p class="mb-0">{:get_config('basic.site_copyright', '© 2024 All rights reserved.')} {:get_config('basic.site_icp', '')}</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Toast 消息容器 -->
+    <div class="toast-container" id="toastContainer"></div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.7.1/dist/jquery.min.js"></script>
+    <script>
+        /**
+         * 全局 Toast 消息提示
+         * @param {string} message - 消息内容
+         * @param {string} type - 消息类型: success, error, warning, info
+         * @param {number} duration - 显示时长(毫秒)，默认3000
+         */
+        function showToast(message, type = 'info', duration = 3000) {
+            const container = document.getElementById('toastContainer');
+            const toast = document.createElement('div');
+            toast.className = `custom-toast toast-${type}`;
+            
+            const icons = {
+                success: 'bi-check-lg',
+                error: 'bi-x-lg',
+                warning: 'bi-exclamation-lg',
+                info: 'bi-info-lg'
+            };
+            
+            toast.innerHTML = `
+                <span class="toast-icon"><i class="bi ${icons[type] || icons.info}"></i></span>
+                <span class="toast-message">${message}</span>
+                <button class="toast-close" onclick="this.parentElement.remove()"><i class="bi bi-x"></i></button>
+            `;
+            
+            container.appendChild(toast);
+            
+            // 自动移除
+            setTimeout(() => {
+                if (toast.parentElement) {
+                    toast.remove();
+                }
+            }, duration);
+        }
+
+        /**
+         * 手机号验证正则
+         * 支持中国大陆手机号：1开头，第二位为3-9，共11位
+         */
+        function isValidPhone(phone) {
+            if (!phone || phone.trim() === '') return true; // 允许为空（非必填）
+            const phoneReg = /^1[3-9]\d{9}$/;
+            return phoneReg.test(phone.trim());
+        }
+
+        /**
+         * 邮箱验证正则
+         */
+        function isValidEmail(email) {
+            if (!email || email.trim() === '') return true; // 允许为空（非必填）
+            const emailReg = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            return emailReg.test(email.trim());
+        }
+
+        /**
+         * 表单验证辅助函数
+         */
+        function validateField(input, validator, errorMessage) {
+            const value = input.value;
+            const $input = $(input);
+            const $feedback = $input.siblings('.invalid-feedback');
+            
+            if (!validator(value)) {
+                input.classList.add('is-invalid');
+                if ($feedback.length) {
+                    $feedback.text(errorMessage);
+                }
+                return false;
+            } else {
+                input.classList.remove('is-invalid');
+                return true;
+            }
+        }
+
+        // 实时验证 - 当输入框失去焦点时验证
+        $(document).on('blur', 'input[type="tel"], input[name="phone"]', function() {
+            const $input = $(this);
+            const value = $input.val().trim();
+            
+            if (value && !isValidPhone(value)) {
+                $input.addClass('is-invalid');
+            } else {
+                $input.removeClass('is-invalid');
+            }
+        });
+
+        $(document).on('blur', 'input[type="email"], input[name="email"]', function() {
+            const $input = $(this);
+            const value = $input.val().trim();
+            
+            if (value && !isValidEmail(value)) {
+                $input.addClass('is-invalid');
+            } else {
+                $input.removeClass('is-invalid');
+            }
+        });
+
+        // 输入时移除错误状态
+        $(document).on('input', '.form-control.is-invalid', function() {
+            $(this).removeClass('is-invalid');
+        });
+    </script>
+    {block name="js"}{/block}
+</body>
+</html>

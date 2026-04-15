@@ -1,0 +1,76 @@
+{extend name="admin/layout/base" /}
+
+{block name="title"}添加分类{/block}
+
+{block name="breadcrumb"}
+<li class="breadcrumb-item">内容管理</li>
+<li class="breadcrumb-item"><a href="{:url('/admin/category', ['type' => $type])}">分类管理</a></li>
+<li class="breadcrumb-item active">添加分类</li>
+{/block}
+
+{block name="content"}
+<div class="card">
+    <div class="card-header">添加分类</div>
+    <div class="card-body">
+        <form id="category-form" action="{:url('/admin/category/save')}" method="post" style="max-width: 600px;" novalidate>
+            <input type="hidden" name="type" value="{$type}">
+            <div class="form-group-wrapper mb-3">
+                <label class="form-label">分类名称 <span class="text-danger">*</span></label>
+                <input type="text" class="form-control" name="name" id="name" maxlength="50">
+                <div class="invalid-feedback">请输入分类名称</div>
+            </div>
+            <div class="mb-3">
+                <label class="form-label">描述</label>
+                <textarea class="form-control" name="description" rows="3" maxlength="255"></textarea>
+            </div>
+            <div class="mb-3">
+                <label class="form-label">排序</label>
+                <input type="number" class="form-control" name="sort" value="0" min="0">
+                <div class="form-text">数字越小越靠前</div>
+            </div>
+            <div class="mb-3">
+                <label class="form-label">状态</label>
+                <select class="form-select" name="status">
+                    <option value="1">正常</option>
+                    <option value="0">禁用</option>
+                </select>
+            </div>
+            <div class="border-top pt-3 mt-3">
+                <button type="submit" class="btn btn-primary px-4">
+                    <i class="bi bi-check-lg me-1"></i>保存
+                </button>
+                <a href="{:url('/admin/category', ['type' => $type])}" class="btn btn-outline-secondary ms-2">取消</a>
+            </div>
+        </form>
+    </div>
+</div>
+{/block}
+
+{block name="js"}
+<script>
+    $('#category-form').on('submit', function(e) {
+        e.preventDefault();
+
+        var isValid = true;
+        var $form = $(this);
+
+        clearAllErrors($form);
+
+        // 验证名称
+        var $name = $('#name');
+        if (!$name.val().trim()) {
+            setFieldError($name, '请输入分类名称');
+            isValid = false;
+            $name.focus();
+        }
+
+        if (!isValid) return;
+
+        submitForm(this, function() {
+            setTimeout(function() {
+                location.href = '{:url("/admin/category", ["type" => $type])}';
+            }, 1000);
+        });
+    });
+</script>
+{/block}

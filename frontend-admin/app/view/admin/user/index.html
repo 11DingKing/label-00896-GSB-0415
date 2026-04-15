@@ -1,0 +1,98 @@
+{extend name="../admin/layout/base" /}
+
+{block name="title"}用户管理{/block}
+
+{block name="breadcrumb"}
+<li class="breadcrumb-item">用户管理</li>
+<li class="breadcrumb-item active">用户列表</li>
+{/block}
+
+{block name="content"}
+<div class="search-form">
+    <form action="" method="get" class="row g-3 align-items-end">
+        <div class="col-auto">
+            <label class="form-label">关键词</label>
+            <input type="text" class="form-control" name="keyword" value="{$keyword}" placeholder="用户名/昵称/邮箱">
+        </div>
+        <div class="col-auto">
+            <label class="form-label">状态</label>
+            <select class="form-select" name="status">
+                <option value="">全部状态</option>
+                <option value="1" {if $status === '1'}selected{/if}>正常</option>
+                <option value="0" {if $status === '0'}selected{/if}>禁用</option>
+            </select>
+        </div>
+        <div class="col-auto">
+            <button type="submit" class="btn btn-primary"><i class="bi bi-search me-1"></i>搜索</button>
+            <a href="/admin/user" class="btn btn-outline-secondary">重置</a>
+        </div>
+    </form>
+</div>
+
+<div class="card">
+    <div class="card-header d-flex justify-content-between align-items-center">
+        <span>用户列表</span>
+        <a href="/admin/user/create" class="btn btn-primary btn-sm">
+            <i class="bi bi-plus-lg me-1"></i>添加用户
+        </a>
+    </div>
+    <div class="card-body p-0">
+        <div class="table-responsive">
+            <table class="table table-hover mb-0">
+                <thead>
+                    <tr>
+                        <th width="60">ID</th>
+                        <th>用户名</th>
+                        <th>昵称</th>
+                        <th>邮箱</th>
+                        <th>角色</th>
+                        <th width="80">状态</th>
+                        <th width="150">最后登录</th>
+                        <th width="150">操作</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {volist name="list" id="item"}
+                    <tr>
+                        <td>{$item.id}</td>
+                        <td>{$item.username}</td>
+                        <td>{$item.nickname|default='-'}</td>
+                        <td>{$item.email|default='-'}</td>
+                        <td>
+                            {volist name="item.roles" id="role"}
+                            <span class="badge bg-primary me-1">{$role.name}</span>
+                            {/volist}
+                        </td>
+                        <td>
+                            {if $item.status == 1}
+                            <span class="status-badge success">正常</span>
+                            {else}
+                            <span class="status-badge danger">禁用</span>
+                            {/if}
+                        </td>
+                        <td>{$item.last_login_time|format_time}</td>
+                        <td class="action-btns">
+                            <a href="/admin/user/edit/{$item.id}" class="btn btn-sm btn-outline-primary">编辑</a>
+                            {if $item.id != 1}
+                            <button type="button" class="btn btn-sm btn-outline-secondary" onclick="toggleStatus('/admin/user/status/{$item.id}')">
+                                {if $item.status == 1}禁用{else}启用{/if}
+                            </button>
+                            <button type="button" class="btn btn-sm btn-outline-danger" onclick="confirmDelete('/admin/user/delete/{$item.id}')">删除</button>
+                            {/if}
+                        </td>
+                    </tr>
+                    {/volist}
+                </tbody>
+            </table>
+        </div>
+    </div>
+    {if !$list->isEmpty()}
+    <div class="card-footer bg-white">
+        <div class="d-flex justify-content-between align-items-center">
+            <span class="text-muted">共 {$list->total()} 条记录</span>
+            {$list->render()}
+        </div>
+    </div>
+    {/if}
+</div>
+{/block}

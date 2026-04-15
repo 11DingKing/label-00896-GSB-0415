@@ -1,0 +1,462 @@
+{extend name="index/layout/base" /}
+
+{block name="title"}{$case.title} - {$site_name}{/block}
+
+{block name="css"}
+<style>
+    .case-detail-container {
+        background: #fff;
+        border-radius: 20px;
+        box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+        overflow: hidden;
+    }
+    
+    .case-hero {
+        position: relative;
+        height: 400px;
+        overflow: hidden;
+        background: linear-gradient(135deg, #1890ff 0%, #096dd9 100%);
+    }
+    
+    .case-hero img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+    
+    .case-hero .hero-placeholder {
+        height: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    
+    .case-hero .hero-placeholder i {
+        font-size: 120px;
+        color: rgba(255,255,255,0.3);
+    }
+    
+    .case-hero .hero-overlay {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        background: linear-gradient(transparent, rgba(0,0,0,0.8));
+        padding: 60px 40px 40px;
+        color: #fff;
+    }
+    
+    .case-hero .hero-title {
+        font-size: 32px;
+        font-weight: 700;
+        margin-bottom: 16px;
+    }
+    
+    .case-hero .hero-client {
+        display: inline-flex;
+        align-items: center;
+        background: rgba(255,255,255,0.2);
+        padding: 8px 16px;
+        border-radius: 20px;
+        font-size: 14px;
+    }
+    
+    .case-hero .hero-client i {
+        margin-right: 8px;
+    }
+    
+    /* 项目信息 */
+    .project-info {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 24px;
+        padding: 30px 40px;
+        border-bottom: 1px solid #e2e8f0;
+        background: #f8fafc;
+    }
+    
+    .project-info .info-item {
+        flex: 1;
+        min-width: 150px;
+    }
+    
+    .project-info .info-label {
+        font-size: 12px;
+        color: var(--text-muted);
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        margin-bottom: 4px;
+    }
+    
+    .project-info .info-value {
+        font-size: 15px;
+        font-weight: 600;
+        color: var(--text-primary);
+    }
+    
+    /* 项目描述 */
+    .project-summary {
+        padding: 40px;
+        border-bottom: 1px solid #e2e8f0;
+    }
+    
+    .project-summary .summary-title {
+        font-size: 18px;
+        font-weight: 600;
+        color: var(--primary-color);
+        margin-bottom: 16px;
+        display: flex;
+        align-items: center;
+    }
+    
+    .project-summary .summary-title i {
+        margin-right: 10px;
+    }
+    
+    .project-summary .summary-text {
+        color: var(--text-secondary);
+        line-height: 1.8;
+        font-size: 15px;
+    }
+    
+    /* 内容区域 */
+    .case-content {
+        padding: 40px;
+        line-height: 2;
+        color: var(--text-secondary);
+    }
+    
+    .case-content h2, .case-content h3, .case-content h4 {
+        color: var(--text-primary);
+        margin-top: 32px;
+        margin-bottom: 16px;
+    }
+    
+    .case-content p {
+        margin-bottom: 16px;
+    }
+    
+    .case-content img {
+        max-width: 100%;
+        border-radius: 12px;
+        margin: 20px 0;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+    }
+    
+    .case-content ul, .case-content ol {
+        margin-bottom: 16px;
+        padding-left: 24px;
+    }
+    
+    .case-content li {
+        margin-bottom: 8px;
+    }
+    
+    /* 导航 */
+    .case-nav {
+        padding: 24px 40px;
+        border-top: 1px solid #e2e8f0;
+        display: flex;
+        justify-content: space-between;
+    }
+    
+    .case-nav .nav-item {
+        max-width: 45%;
+    }
+    
+    .case-nav .nav-item a {
+        text-decoration: none;
+        display: block;
+    }
+    
+    .case-nav .nav-item .nav-label {
+        font-size: 12px;
+        color: var(--text-muted);
+        margin-bottom: 4px;
+    }
+    
+    .case-nav .nav-item .nav-title {
+        font-weight: 500;
+        color: var(--text-primary);
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        transition: color 0.3s;
+    }
+    
+    .case-nav .nav-item a:hover .nav-title {
+        color: var(--primary-color);
+    }
+    
+    /* 侧边栏 */
+    .sidebar-widget {
+        background: #fff;
+        border-radius: 16px;
+        padding: 24px;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+        margin-bottom: 24px;
+    }
+    
+    .sidebar-widget .widget-title {
+        font-size: 18px;
+        font-weight: 600;
+        margin-bottom: 20px;
+        padding-bottom: 12px;
+        border-bottom: 2px solid var(--primary-color);
+    }
+    
+    .related-case {
+        display: flex;
+        align-items: center;
+        padding: 16px 0;
+        border-bottom: 1px solid #f0f0f0;
+        text-decoration: none;
+    }
+    
+    .related-case:last-child {
+        border-bottom: none;
+    }
+    
+    .related-case .related-thumb {
+        width: 70px;
+        height: 50px;
+        border-radius: 8px;
+        overflow: hidden;
+        margin-right: 16px;
+        flex-shrink: 0;
+        background: #f0f0f0;
+    }
+    
+    .related-case .related-thumb img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+    
+    .related-case .related-thumb .thumb-placeholder {
+        width: 100%;
+        height: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    
+    .related-case .related-thumb .thumb-placeholder i {
+        font-size: 24px;
+        color: #cbd5e1;
+    }
+    
+    .related-case .related-info {
+        flex: 1;
+        min-width: 0;
+    }
+    
+    .related-case .related-title {
+        font-size: 14px;
+        font-weight: 500;
+        color: var(--text-primary);
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        transition: color 0.3s;
+    }
+    
+    .related-case:hover .related-title {
+        color: var(--primary-color);
+    }
+    
+    .related-case .related-client {
+        font-size: 12px;
+        color: var(--text-muted);
+        margin-top: 4px;
+    }
+    
+    .cta-widget {
+        background: linear-gradient(135deg, #1890ff 0%, #096dd9 100%);
+        color: #fff;
+        text-align: center;
+    }
+    
+    .cta-widget .widget-title {
+        color: #fff;
+        border-bottom-color: rgba(255,255,255,0.3);
+    }
+    
+    .cta-widget p {
+        opacity: 0.9;
+        margin-bottom: 20px;
+    }
+    
+    .cta-widget .btn {
+        background: #fff;
+        color: var(--primary-color);
+        border: none;
+        padding: 12px 32px;
+        font-weight: 600;
+    }
+    
+    .cta-widget .btn:hover {
+        background: #f0f0f0;
+    }
+    
+    @media (max-width: 992px) {
+        .case-hero { height: 300px; }
+        .case-hero .hero-title { font-size: 24px; }
+        .case-hero .hero-overlay { padding: 40px 24px 24px; }
+        .project-info, .project-summary, .case-content, .case-nav { padding: 24px; }
+    }
+</style>
+{/block}
+
+{block name="content"}
+<!-- 页面标题 -->
+<div class="page-header">
+    <div class="header-decoration d1"></div>
+    <div class="header-decoration d2"></div>
+    <div class="header-decoration d3"></div>
+    <div class="container">
+        <div class="page-icon">
+            <i class="bi bi-briefcase"></i>
+        </div>
+        <h1>{$case.title|str_cut=30}</h1>
+        <p class="page-subtitle">{if $case.client}{$case.client} · {/if}成功案例 · 实力见证</p>
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="{:url('/')}"><i class="bi bi-house me-1"></i>首页</a></li>
+                <li class="breadcrumb-item"><a href="{:url('/case')}">案例展示</a></li>
+                <li class="breadcrumb-item active">案例详情</li>
+            </ol>
+        </nav>
+    </div>
+</div>
+
+<section class="py-5" style="background: var(--bg-light);">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8">
+                <article class="case-detail-container">
+                    <!-- 案例封面 -->
+                    <div class="case-hero">
+                        {if $case.cover}
+                        <img src="{$case.cover}" alt="{$case.title}">
+                        {else/}
+                        <div class="hero-placeholder">
+                            <i class="bi bi-briefcase"></i>
+                        </div>
+                        {/if}
+                        <div class="hero-overlay">
+                            <h1 class="hero-title">{$case.title}</h1>
+                            {if $case.client}
+                            <div class="hero-client">
+                                <i class="bi bi-building"></i>{$case.client}
+                            </div>
+                            {/if}
+                        </div>
+                    </div>
+                    
+                    <!-- 项目信息 -->
+                    <div class="project-info">
+                        {if $case.client}
+                        <div class="info-item">
+                            <div class="info-label">客户名称</div>
+                            <div class="info-value">{$case.client}</div>
+                        </div>
+                        {/if}
+                        <div class="info-item">
+                            <div class="info-label">项目类型</div>
+                            <div class="info-value">企业项目</div>
+                        </div>
+                        <div class="info-item">
+                            <div class="info-label">完成时间</div>
+                            <div class="info-value">{$case.created_at|format_time='Y年m月'}</div>
+                        </div>
+                        <div class="info-item">
+                            <div class="info-label">项目状态</div>
+                            <div class="info-value text-success">已完成</div>
+                        </div>
+                    </div>
+                    
+                    <!-- 项目描述 -->
+                    {if $case.description}
+                    <div class="project-summary">
+                        <h3 class="summary-title">
+                            <i class="bi bi-info-circle"></i>项目简介
+                        </h3>
+                        <p class="summary-text">{$case.description}</p>
+                    </div>
+                    {/if}
+                    
+                    <!-- 详细内容 -->
+                    <div class="case-content">
+                        {$case.content|raw}
+                    </div>
+                    
+                    <!-- 上一个/下一个 -->
+                    <div class="case-nav">
+                        <div class="nav-item">
+                            {if $prev}
+                            <a href="{:url('/case/'.$prev.id)}">
+                                <div class="nav-label"><i class="bi bi-chevron-left"></i> 上一个案例</div>
+                                <div class="nav-title">{$prev.title}</div>
+                            </a>
+                            {/if}
+                        </div>
+                        <div class="nav-item text-end">
+                            {if $next}
+                            <a href="{:url('/case/'.$next.id)}">
+                                <div class="nav-label">下一个案例 <i class="bi bi-chevron-right"></i></div>
+                                <div class="nav-title">{$next.title}</div>
+                            </a>
+                            {/if}
+                        </div>
+                    </div>
+                </article>
+            </div>
+
+            <div class="col-lg-4">
+                <!-- 相关案例 -->
+                {if !$related->isEmpty()}
+                <div class="sidebar-widget">
+                    <h4 class="widget-title">相关案例</h4>
+                    {volist name="related" id="item"}
+                    <a href="{:url('/case/'.$item.id)}" class="related-case">
+                        <div class="related-thumb">
+                            {if $item.cover}
+                            <img src="{$item.cover}" alt="{$item.title}">
+                            {else/}
+                            <div class="thumb-placeholder">
+                                <i class="bi bi-briefcase"></i>
+                            </div>
+                            {/if}
+                        </div>
+                        <div class="related-info">
+                            <div class="related-title">{$item.title|str_cut=20}</div>
+                            {if $item.client}
+                            <div class="related-client">{$item.client}</div>
+                            {/if}
+                        </div>
+                    </a>
+                    {/volist}
+                </div>
+                {/if}
+
+                <!-- 咨询CTA -->
+                <div class="sidebar-widget cta-widget">
+                    <h4 class="widget-title">对此案例感兴趣？</h4>
+                    <p>欢迎联系我们获取更多信息，我们将为您提供专业的解决方案。</p>
+                    <a href="{:url('/contact')}" class="btn btn-lg">
+                        <i class="bi bi-telephone me-2"></i>立即咨询
+                    </a>
+                </div>
+                
+                <!-- 返回列表 -->
+                <div class="sidebar-widget text-center">
+                    <a href="{:url('/case')}" class="btn btn-outline-primary btn-lg w-100">
+                        <i class="bi bi-grid me-2"></i>返回案例列表
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{/block}

@@ -1,0 +1,379 @@
+{extend name="index/layout/base" /}
+
+{block name="title"}{$product.name} - {$site_name}{/block}
+
+{block name="css"}
+<style>
+    .product-detail {
+        background: #fff;
+        border-radius: 20px;
+        box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+        padding: 40px;
+        position: relative;
+        z-index: 10;
+    }
+
+    .product-gallery {
+        position: relative;
+        border-radius: 16px;
+        overflow: hidden;
+        background: linear-gradient(135deg, #f5f7fa 0%, #e4e8eb 100%);
+    }
+
+    .product-gallery img {
+        width: 100%;
+        height: 400px;
+        object-fit: cover;
+    }
+
+    .product-gallery .gallery-placeholder {
+        height: 400px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .product-gallery .gallery-placeholder i {
+        font-size: 100px;
+        color: #cbd5e1;
+    }
+
+    .product-info h1 {
+        font-size: 28px;
+        font-weight: 700;
+        margin-bottom: 16px;
+        color: var(--text-primary);
+    }
+
+    .product-info .product-price {
+        font-size: 32px;
+        font-weight: 700;
+        color: #ff6b6b;
+        margin-bottom: 24px;
+    }
+
+    .product-info .product-price small {
+        font-size: 16px;
+        color: var(--text-muted);
+        font-weight: 400;
+    }
+
+    .product-info .product-desc {
+        color: var(--text-secondary);
+        font-size: 15px;
+        line-height: 1.8;
+        margin-bottom: 24px;
+        padding-bottom: 24px;
+        border-bottom: 1px solid #e2e8f0;
+    }
+
+    .product-features {
+        margin-bottom: 24px;
+    }
+
+    .product-features .feature-item {
+        display: flex;
+        align-items: center;
+        padding: 12px 0;
+        border-bottom: 1px solid #f0f0f0;
+    }
+
+    .product-features .feature-item:last-child {
+        border-bottom: none;
+    }
+
+    .product-features .feature-icon {
+        width: 40px;
+        height: 40px;
+        background: linear-gradient(135deg, #1890ff, #40a9ff);
+        border-radius: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-right: 16px;
+        color: #fff;
+    }
+
+    .product-features .feature-text {
+        color: var(--text-secondary);
+        font-size: 14px;
+    }
+
+    .product-actions {
+        display: flex;
+        gap: 16px;
+        flex-wrap: wrap;
+    }
+
+    .product-actions .btn {
+        padding: 14px 32px;
+        font-size: 16px;
+        border-radius: 12px;
+    }
+
+    /* 产品详情内容 */
+    .product-content-section {
+        background: #fff;
+        border-radius: 20px;
+        box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+        margin-top: 40px;
+        overflow: hidden;
+    }
+
+    .product-content-section .section-header {
+        background: linear-gradient(135deg, #1890ff 0%, #096dd9 100%);
+        color: #fff;
+        padding: 20px 40px;
+    }
+
+    .product-content-section .section-header h3 {
+        margin: 0;
+        font-size: 20px;
+        font-weight: 600;
+    }
+
+    .product-content-section .section-body {
+        padding: 40px;
+        line-height: 2;
+        color: var(--text-secondary);
+    }
+
+    .product-content-section .section-body img {
+        max-width: 100%;
+        border-radius: 8px;
+        margin: 16px 0;
+    }
+
+    /* 相关产品 */
+    .related-section {
+        margin-top: 60px;
+    }
+
+    .related-section .section-title {
+        font-size: 24px;
+        font-weight: 700;
+        margin-bottom: 30px;
+        position: relative;
+        padding-left: 16px;
+    }
+
+    .related-section .section-title::before {
+        content: '';
+        position: absolute;
+        left: 0;
+        top: 50%;
+        transform: translateY(-50%);
+        width: 4px;
+        height: 24px;
+        background: var(--primary-color);
+        border-radius: 2px;
+    }
+
+    .related-card {
+        background: #fff;
+        border-radius: 16px;
+        overflow: hidden;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+        transition: all 0.3s ease;
+    }
+
+    .related-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 12px 40px rgba(0,0,0,0.12);
+    }
+
+    .related-card .related-thumb {
+        height: 180px;
+        overflow: hidden;
+        background: #f5f7fa;
+    }
+
+    .related-card .related-thumb img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: transform 0.3s;
+    }
+
+    .related-card:hover .related-thumb img {
+        transform: scale(1.05);
+    }
+
+    .related-card .related-thumb .thumb-placeholder {
+        height: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .related-card .related-thumb .thumb-placeholder i {
+        font-size: 48px;
+        color: #cbd5e1;
+    }
+
+    .related-card .related-body {
+        padding: 20px;
+    }
+
+    .related-card .related-title {
+        font-size: 15px;
+        font-weight: 600;
+        margin: 0;
+    }
+
+    .related-card .related-title a {
+        color: var(--text-primary);
+        text-decoration: none;
+        transition: color 0.3s;
+    }
+
+    .related-card .related-title a:hover {
+        color: var(--primary-color);
+    }
+
+    @media (max-width: 992px) {
+        .product-detail { padding: 24px; }
+        .product-gallery img { height: 300px; }
+        .product-gallery .gallery-placeholder { height: 300px; }
+        .product-info h1 { font-size: 24px; }
+        .product-info .product-price { font-size: 26px; }
+    }
+</style>
+{/block}
+
+{block name="content"}
+<!-- 页面标题 -->
+<div class="page-header">
+    <div class="header-decoration d1"></div>
+    <div class="header-decoration d2"></div>
+    <div class="header-decoration d3"></div>
+    <div class="container">
+        <div class="page-icon">
+            <i class="bi bi-box"></i>
+        </div>
+        <h1>{$product.name|str_cut=30}</h1>
+        <p class="page-subtitle">{if $product.category}{$product.category.name} · {/if}专业品质 · 值得信赖</p>
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="{:url('/')}"><i class="bi bi-house me-1"></i>首页</a></li>
+                <li class="breadcrumb-item"><a href="{:url('/product')}">产品展示</a></li>
+                <li class="breadcrumb-item active">产品详情</li>
+            </ol>
+        </nav>
+    </div>
+</div>
+
+<section class="py-5" style="background: var(--bg-light);">
+    <div class="container">
+        <!-- 产品主信息 -->
+        <div class="product-detail">
+            <div class="row">
+                <div class="col-lg-6 mb-4 mb-lg-0">
+                    <div class="product-gallery">
+                        {if $product.cover}
+                        <img src="{$product.cover}" alt="{$product.name}">
+                        {else/}
+                        <div class="gallery-placeholder">
+                            <i class="bi bi-box-seam"></i>
+                        </div>
+                        {/if}
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <div class="product-info">
+                        <h1>{$product.name}</h1>
+
+                        {if $product.price > 0}
+                        <div class="product-price">
+                            ¥{$product.price}
+                            <small>/ 起</small>
+                        </div>
+                        {else/}
+                        <div class="product-price">
+                            <small>价格面议，欢迎咨询</small>
+                        </div>
+                        {/if}
+
+                        {if $product.description}
+                        <p class="product-desc">{$product.description}</p>
+                        {/if}
+
+                        <div class="product-features">
+                            <div class="feature-item">
+                                <div class="feature-icon">
+                                    <i class="bi bi-shield-check"></i>
+                                </div>
+                                <div class="feature-text">品质保证，正品保障</div>
+                            </div>
+                            <div class="feature-item">
+                                <div class="feature-icon">
+                                    <i class="bi bi-truck"></i>
+                                </div>
+                                <div class="feature-text">快速发货，全国配送</div>
+                            </div>
+                            <div class="feature-item">
+                                <div class="feature-icon">
+                                    <i class="bi bi-headset"></i>
+                                </div>
+                                <div class="feature-text">专业客服，贴心服务</div>
+                            </div>
+                        </div>
+
+                        <div class="product-actions">
+                            <a href="{:url('/contact')}" class="btn btn-primary btn-lg">
+                                <i class="bi bi-telephone me-2"></i>立即咨询
+                            </a>
+                            <a href="javascript:history.back()" class="btn btn-outline-secondary btn-lg">
+                                <i class="bi bi-arrow-left me-2"></i>返回列表
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 产品详情内容 -->
+        {if $product.content}
+        <div class="product-content-section">
+            <div class="section-header">
+                <h3><i class="bi bi-file-text me-2"></i>产品详情</h3>
+            </div>
+            <div class="section-body">
+                {$product.content|raw}
+            </div>
+        </div>
+        {/if}
+
+        <!-- 相关产品 -->
+        {if !$related->isEmpty()}
+        <div class="related-section">
+            <h3 class="section-title">相关产品</h3>
+            <div class="row g-4">
+                {volist name="related" id="item"}
+                <div class="col-lg-3 col-md-6">
+                    <div class="related-card">
+                        <div class="related-thumb">
+                            {if $item.cover}
+                            <a href="{:url('/product/'.$item.id)}">
+                                <img src="{$item.cover}" alt="{$item.name}">
+                            </a>
+                            {else/}
+                            <div class="thumb-placeholder">
+                                <i class="bi bi-box-seam"></i>
+                            </div>
+                            {/if}
+                        </div>
+                        <div class="related-body">
+                            <h4 class="related-title">
+                                <a href="{:url('/product/'.$item.id)}">{$item.name|str_cut=20}</a>
+                            </h4>
+                        </div>
+                    </div>
+                </div>
+                {/volist}
+            </div>
+        </div>
+        {/if}
+    </div>
+</section>
+{/block}
