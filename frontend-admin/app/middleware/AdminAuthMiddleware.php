@@ -61,6 +61,31 @@ class AdminAuthMiddleware
         // 设置视图变量
         View::assign('admin_user', $adminUser);
 
+        // 防止普通管理员操作超级管理员
+        if ($adminUser['id'] != 1) {
+            // 检查用户相关操作
+            if (preg_match('/admin\/user\/(delete|update)/i', $path)) {
+                $userId = $request->param('id/d', 0);
+                if ($userId == 1) {
+                    if ($isApiRequest) {
+                        return json(['code' => 403, 'msg' => '无权操作超级管理员账户']);
+                    }
+                    return response('无权操作超级管理员账户', 403);
+                }
+            }
+
+            // 检查角色相关操作
+            if (preg_match('/admin\/role\/(update|delete|permission)/i', $path)) {
+                $roleId = $request->param('id/d', 0);
+                if ($roleId == 1) {
+                    if ($isApiRequest) {
+                        return json(['code' => 403, 'msg' => '无权操作超级管理员角色']);
+                    }
+                    return response('无权操作超级管理员角色', 403);
+                }
+            }
+        }
+
         // 权限检查
         if (!$this->checkPermission($adminUser, $path)) {
             if ($isApiRequest) {
