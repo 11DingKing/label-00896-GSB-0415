@@ -6,6 +6,10 @@ FROM php:8.2-apache
 # 设置工作目录
 WORKDIR /var/www/html
 
+# 替换为阿里云镜像源
+RUN sed -i 's|deb.debian.org|mirrors.aliyun.com|g' /etc/apt/sources.list.d/debian.sources \
+    && sed -i 's|security.debian.org|mirrors.aliyun.com|g' /etc/apt/sources.list.d/debian.sources
+
 # 安装系统依赖
 RUN apt-get update && apt-get install -y \
     libzip-dev \
@@ -47,6 +51,9 @@ RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/bin -
 
 # 复制项目文件
 COPY . /var/www/html/
+
+# 设置 Composer 阿里云镜像
+RUN composer config -g repo.packagist composer https://mirrors.aliyun.com/composer/
 
 # 安装 PHP 依赖
 RUN composer install --no-dev --optimize-autoloader --no-interaction
